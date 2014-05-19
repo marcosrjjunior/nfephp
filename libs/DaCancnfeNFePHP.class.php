@@ -41,23 +41,23 @@ if (!defined('PATH_ROOT')) {
 set_time_limit(1800);
 //definição do caminho para o diretorio com as fontes do FDPF
 if (!defined('FPDF_FONTPATH')) {
-	define('FPDF_FONTPATH','font/');
+    define('FPDF_FONTPATH','font/');
 }
 //situação externa do documento
-if(!defined('NFEPHP_SITUACAO_EXTERNA_CANCELADA')){
-	define('NFEPHP_SITUACAO_EXTERNA_CANCELADA'	,1);
-	define('NFEPHP_SITUACAO_EXTERNA_DENEGADA'	,2);
-	define('NFEPHP_SITUACAO_EXTERNA_NONE'		,0);
+if (!defined('NFEPHP_SITUACAO_EXTERNA_CANCELADA')) {
+    define('NFEPHP_SITUACAO_EXTERNA_CANCELADA'	,1);
+    define('NFEPHP_SITUACAO_EXTERNA_DENEGADA'	,2);
+    define('NFEPHP_SITUACAO_EXTERNA_NONE'		,0);
 }
 //classe extendida da classe FPDF para montagem do arquivo pdf
-require_once('PdfNFePHP.class.php');
+require_once 'PdfNFePHP.class.php';
 //classe com as funções communs entre DANFE e DACTE
-require_once('CommonNFePHP.class.php');
-//interface 
-require_once('DocumentoNFePHP.interface.php');
+require_once 'CommonNFePHP.class.php';
+//interface
+require_once 'DocumentoNFePHP.interface.php';
 
-class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
-    
+class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
+{
     //publicas
     public $logoAlign='C'; //alinhamento do logo
     public $yDados=0;
@@ -95,8 +95,7 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     private $dom;
     private $infCanc;
     private $retCancNFe;
-    
-    
+
    /**
     *__construct
     * @package NFePHP
@@ -112,18 +111,19 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     * @param array $aEnd array com o endereço do emitente
     * @param number $mododebug 1-SIM e 0-Não (0 default)
     */
-    function __construct($docXML='', $sOrientacao='',$sPapel='',$sPathLogo='', $sDestino='I',$sDirPDF='', $fontePDF='', $aEnd='', $mododebug=0) {
-        if(is_numeric($mododebug)){
+    public function __construct($docXML='', $sOrientacao='',$sPapel='',$sPathLogo='', $sDestino='I',$sDirPDF='', $fontePDF='', $aEnd='', $mododebug=0)
+    {
+        if (is_numeric($mododebug)) {
             $this->debugMode = $mododebug;
         }
-        if($this->debugMode){
+        if ($this->debugMode) {
             //ativar modo debug
             error_reporting(E_ALL);ini_set('display_errors', 'On');
         } else {
             //desativar modo debug
             error_reporting(0);ini_set('display_errors', 'Off');
         }
-        if (is_array($aEnd)){
+        if (is_array($aEnd)) {
             $this->aEnd = $aEnd;
         }
         $this->orientacao   = $sOrientacao;
@@ -140,28 +140,30 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $this->fontePadrao = $fontePDF;
         }
         //se for passado o xml
-        if ( !is_file($docXML) ){
-		if (empty($docXML)){
-		    $this->errMsg = 'Um caminho ou um arquivo xml do protocolo de cancelamento deve ser passado!';
-		    $this->errStatus = true;
-		    return false;
-		}
-	}else{
-		$docXML = file_get_contents($docXML);
+        if ( !is_file($docXML) ) {
+        if (empty($docXML)) {
+            $this->errMsg = 'Um caminho ou um arquivo xml do protocolo de cancelamento deve ser passado!';
+            $this->errStatus = true;
+
+            return false;
+        }
+    } else {
+        $docXML = file_get_contents($docXML);
         }
         $this->dom = new DomDocument;
         $this->dom->loadXML($docXML);
-	
+
         $this->infCanc        = $this->dom->getElementsByTagName("infCanc")->item(0);
         $this->retCancNFe     = $this->dom->getElementsByTagName("retCancNFe")->item(0);
-        if(empty($this->infCanc) && empty($this->retCancNFe)){
+        if (empty($this->infCanc) && empty($this->retCancNFe)) {
             $this->errMsg = 'Um protocolo de cancelamento de NFe deve ser passado !!';
             $this->errStatus = true;
+
             return false;
         }
         $this->id = str_replace('ID', '', $this->infCanc->getAttribute("Id"));
-	$this->chNFe = $this->infCanc->getElementsByTagName("chNFe")->item(0)->nodeValue;
-	$this->aEnd['CNPJ']=substr($this->chNFe,6,14);
+    $this->chNFe = $this->infCanc->getElementsByTagName("chNFe")->item(0)->nodeValue;
+    $this->aEnd['CNPJ']=substr($this->chNFe,6,14);
         $this->tpAmb = $this->infCanc->getElementsByTagName("tpAmb")->item(0)->nodeValue;
         $this->xJust = $this->infCanc->getElementsByTagName("xJust")->item(0)->nodeValue;
         $this->dhEvento = $this->retCancNFe->getElementsByTagName("dhRecbto")->item(0)->nodeValue;
@@ -170,7 +172,7 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $this->dhRegEvento = $this->retCancNFe->getElementsByTagName("dhRecbto")->item(0)->nodeValue;
         $this->nProt = $this->retCancNFe->getElementsByTagName("nProt")->item(0)->nodeValue;
     }//fim __construct
-  
+
     /**
      * simpleConsistencyCheck
      * @package NFePHP
@@ -179,45 +181,49 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * @author Marcos Diez
      * @return bool Retorna se o documenento se parece com um DACTE ( condicao necessaria porem nao suficiente )
     */
-    public function simpleConsistencyCheck(){
-        if( 1 == 2 
-            || $this->xml == null 
+    public function simpleConsistencyCheck()
+    {
+        if (1 == 2
+            || $this->xml == null
             || $this->infCanc == null
-            ){ 
-            return false; 
-	}
-	return true;
+            ) {
+            return false;
+    }
+
+    return true;
     }//fim simpleConsistencyCheck
-  
+
     /**
      * monta
-     * 
+     *
      * @package NFePHP
      * @name monta
      * @version 1.0
      * @author Marcos Diez
-     * @param type $orientacao
-     * @param type $papel
-     * @param type $logoAlign
-     * @return type 
-     */    
-    public function monta($orientacao='',$papel='A4',$logoAlign='C',$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE,$CLASSE_PDF=false){
+     * @param  type $orientacao
+     * @param  type $papel
+     * @param  type $logoAlign
+     * @return type
+     */
+    public function monta($orientacao='',$papel='A4',$logoAlign='C',$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE,$CLASSE_PDF=false)
+    {
         return $this->montaDaCancnfe($orientacao,$papel,$logoAlign,$situacao_externa,$CLASSE_PDF);
     }//fim monta
-    
+
     /**
      * printDocument
-     * 
+     *
      * @package NFePHP
      * @name montaDANFE
      * @version 1.0
      * @author Marcos Diez
-     * @param type $nome 
-     * @param type $destino
-     * @param type $printer
-     * @return object pdf 
-     */ 	
-    public function printDocument($nome='',$destino='I',$printer=''){
+     * @param  type   $nome
+     * @param  type   $destino
+     * @param  type   $printer
+     * @return object pdf
+     */
+    public function printDocument($nome='',$destino='I',$printer='')
+    {
         return $this->printDaCancnfe($nome,$destino,$printer);
     }//fim printDocument
 
@@ -230,28 +236,29 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * @package NFePHP
      * @name montaDACCE
      * @version ????
-     * @param string $orientacao (Opcional) Estabelece a orientação da impressão (ex. P-retrato), se nada for fornecido será usado o padrão da NFe
-     * @param string $papel (Opcional) Estabelece o tamanho do papel (ex. A4)
+     * @param  string $orientacao (Opcional) Estabelece a orientação da impressão (ex. P-retrato), se nada for fornecido será usado o padrão da NFe
+     * @param  string $papel      (Opcional) Estabelece o tamanho do papel (ex. A4)
      * @return string O ID do evento extraido do arquivo XML
      */
-    public function montaDaCancnfe($orientacao='',$papel='A4',$logoAlign='C',$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE,$CLASSE_PDF=false){
-        if ($orientacao == ''){
+    public function montaDaCancnfe($orientacao='',$papel='A4',$logoAlign='C',$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE,$CLASSE_PDF=false)
+    {
+        if ($orientacao == '') {
             $orientacao = 'P';
         }
         $this->orientacao = $orientacao;
-	if(isset($this->aEnd['CNPJ']))
-		$this->__adicionaLogoPeloCnpj($this->aEnd['CNPJ']);
+    if(isset($this->aEnd['CNPJ']))
+        $this->__adicionaLogoPeloCnpj($this->aEnd['CNPJ']);
         if(isset($this->aEnd['CPF']))
-		$this->__adicionaLogoPeloCnpj($this->aEnd['CPF']);
+        $this->__adicionaLogoPeloCnpj($this->aEnd['CPF']);
         $this->papel = $papel;
         $this->logoAlign = $logoAlign;
 
-	if($CLASSE_PDF!==false){
-		$this->pdf = $CLASSE_PDF;
-	}else{
-		$this->pdf = new PdfNFePHP($this->orientacao, 'mm', $this->papel);
-	}
-        if( $this->orientacao == 'P' ){
+    if ($CLASSE_PDF!==false) {
+        $this->pdf = $CLASSE_PDF;
+    } else {
+        $this->pdf = new PdfNFePHP($this->orientacao, 'mm', $this->papel);
+    }
+        if ($this->orientacao == 'P') {
             // margens do PDF
             $margSup = 2;
             $margEsq = 2;
@@ -259,10 +266,10 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             // posição inicial do relatorio
             $xInic = 1;
             $yInic = 1;
-            if($this->papel =='A4'){ //A4 210x297mm
+            if ($this->papel =='A4') { //A4 210x297mm
                 $maxW = 210;
                 $maxH = 297;
-            }    
+            }
         } else {
             // margens do PDF
             $margSup = 3;
@@ -271,12 +278,12 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             // posição inicial do relatorio
             $xInic = 5;
             $yInic = 5;
-            if($papel =='A4'){ //A4 210x297mm
+            if ($papel =='A4') { //A4 210x297mm
                 $maxH = 210;
                 $maxW = 297;
             }
         }//orientação
-        
+
         //largura imprimivel em mm
         $this->wPrint = $maxW-($margEsq+$xInic);
         //comprimento imprimivel em mm
@@ -305,24 +312,26 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $y = $this->__footerCCe($x,$y+$this->hPrint-20);
 
         //retorna o ID do evento
-	if($CLASSE_PDF!==false){
+    if ($CLASSE_PDF!==false) {
             $aR = array(
-		'id'=>$this->id,
-		'classe_PDF'=>$this->pdf);
+        'id'=>$this->id,
+        'classe_PDF'=>$this->pdf);
+
             return $aR;
         } else {
             return $this->id;
-        }        
+        }
     } //fim __buildCCe
-    
+
     /**
-     * 
-     * @param type $x
-     * @param type $y
-     * @param type $pag
+     *
+     * @param  type $x
+     * @param  type $y
+     * @param  type $pag
      * @return type
      */
-    private function __headerCCe($x,$y,$pag,$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE){
+    private function __headerCCe($x,$y,$pag,$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE)
+    {
         $oldX = $x;
         $oldY = $y;
         $maxW = $this->wPrint;
@@ -330,9 +339,9 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         //####################################################################################
         //coluna esquerda identificação do emitente
         $w = round($maxW*0.41,0);// 80;
-        if( $this->orientacao == 'P' ){
+        if ($this->orientacao == 'P') {
             $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'I');
-        }else{
+        } else {
             $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         }
         $w1 = $w;
@@ -341,13 +350,13 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $this->__textBox($x,$y,$w,$h);
         $texto = 'IDENTIFICAÇÃO DO EMITENTE';
         $this->__textBox($x,$y,$w,5,$texto,$aFont,'T','C',0,'');
-        if (is_file($this->logomarca)){
+        if (is_file($this->logomarca)) {
             $logoInfo = getimagesize($this->logomarca);
             //largura da imagem em mm
             $logoWmm = ($logoInfo[0]/72)*25.4;
             //altura da imagem em mm
             $logoHmm = ($logoInfo[1]/72)*25.4;
-            if ($this->logoAlign=='L'){
+            if ($this->logoAlign=='L') {
                 $nImgW = round($w/3,0);
                 $nImgH = round($logoHmm * ($nImgW/$logoWmm),0);
                 $xImg = $x+1;
@@ -357,7 +366,7 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
                 $y1 = round($h/3+$y,0);
                 $tw = round(2*$w/3,0);
             }
-            if ($this->logoAlign=='C'){
+            if ($this->logoAlign=='C') {
                 $nImgH = round($h/3,0);
                 $nImgW = round($logoWmm * ($nImgH/$logoHmm),0);
                 $xImg = round(($w-$nImgW)/2+$x,0);
@@ -366,7 +375,7 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
                 $y1 = round($yImg + $nImgH + 1,0);
                 $tw = $w;
             }
-            if($this->logoAlign=='R'){
+            if ($this->logoAlign=='R') {
                 $nImgW = round($w/3,0);
                 $nImgH = round($logoHmm * ($nImgW/$logoWmm),0);
                 $xImg = round($x+($w-(1+$nImgW)),0);
@@ -403,29 +412,29 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $fone = (isset($this->aEnd['telefone'])?$this->aEnd['telefone']:'');
         $email = (isset($this->aEnd['email'])?$this->aEnd['email']:'');
         $foneLen = strlen($fone);
-        if ($foneLen > 0 ){
+        if ($foneLen > 0) {
             $fone2 = substr($fone,0,$foneLen-4);
             $fone1 = substr($fone,0,$foneLen-8);
             $fone = '(' . $fone1 . ') ' . substr($fone2,-4) . '-' . substr($fone,-4);
         } else {
             $fone = '';
         }
-        if ($email != ''){
+        if ($email != '') {
             $email = 'Email: '.$email;
         }
-	$texto = "";
-	$tmp_txt=trim(	($lgr!=''?"$lgr, ":'').($nro!=0?$nro:"SN").($cpl!=''?" - $cpl":'') );
-	$tmp_txt=($tmp_txt=='SN'?'':$tmp_txt);
-	$texto .= ($texto!='' && $tmp_txt!=''?"\n":'').$tmp_txt;
-	$tmp_txt=trim(	$bairro . ($bairro!='' && $CEP!=''?" - ":'') . $CEP);
-	$texto .= ($texto!='' && $tmp_txt!=''?"\n":'').$tmp_txt;
-	$tmp_txt=$mun;
-	$tmp_txt.=($tmp_txt!='' && $UF!=''?" - ":'').$UF;
-	$tmp_txt.=($tmp_txt!='' && $fone!=''?" - ":'').$fone;
-	$texto .= ($texto!='' && $tmp_txt!=''?"\n":'').$tmp_txt;
-	$tmp_txt=$email;
-	$texto .= ($texto!='' && $tmp_txt!=''?"\n":'').$tmp_txt;
-	$this->__textBox($x1,$y1-2,$tw,8,$texto,$aFont,'T','C',0,'');
+    $texto = "";
+    $tmp_txt=trim(	($lgr!=''?"$lgr, ":'').($nro!=0?$nro:"SN").($cpl!=''?" - $cpl":'') );
+    $tmp_txt=($tmp_txt=='SN'?'':$tmp_txt);
+    $texto .= ($texto!='' && $tmp_txt!=''?"\n":'').$tmp_txt;
+    $tmp_txt=trim(	$bairro . ($bairro!='' && $CEP!=''?" - ":'') . $CEP);
+    $texto .= ($texto!='' && $tmp_txt!=''?"\n":'').$tmp_txt;
+    $tmp_txt=$mun;
+    $tmp_txt.=($tmp_txt!='' && $UF!=''?" - ":'').$UF;
+    $tmp_txt.=($tmp_txt!='' && $fone!=''?" - ":'').$fone;
+    $texto .= ($texto!='' && $tmp_txt!=''?"\n":'').$tmp_txt;
+    $tmp_txt=$email;
+    $texto .= ($texto!='' && $tmp_txt!=''?"\n":'').$tmp_txt;
+    $this->__textBox($x1,$y1-2,$tw,8,$texto,$aFont,'T','C',0,'');
 
         //##################################################
 
@@ -439,7 +448,7 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
 
         $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'I');
         $this->__textBox($x,$y+7,$w2,8,'(Protocolo Cancelamento de NFe)',$aFont,'T','C',0,'');
-        
+
         #$texto = 'ID do Evento: '.$this->id;
         #$aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'');
         #$this->__textBox($x,$y+15,$w2,8,$texto,$aFont,'T','L',0,'');
@@ -451,7 +460,7 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $tsHora = $this->__convertTime($this->dhRegEvento);
         $texto = 'Prococolo: '.$this->nProt.'  -  Registrado na SEFAZ em: '.date('d/m/Y   H:i:s',$tsHora);
         $this->__textBox($x,$y+25,$w2,8,$texto,$aFont,'T','L',0,'');
-        
+
         //$cStat;
         //$tpAmb;
         //####################################################
@@ -472,7 +481,6 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $numNF = $this->__format($numNF,"###.###.###");
         $texto = "Nota Fiscal: " . $numNF .'  -   Série: '.$serie;
         $this->__textBox($x+2,$y+11,$w2,8,$texto,$aFont,'T','L',0,'');
-        
 
         $bW = 87;
         $bH = 15;
@@ -486,14 +494,14 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'');
         $texto = $this->__format( $this->chNFe, $this->formatoChave );
         $this->__textBox($x,$y1,$w-2,$h,$texto,$aFont,'T','C',0,'');
-	$RETURN_VALUE=$sY;
-	/////////////////
+    $RETURN_VALUE=$sY;
+    /////////////////
         //indicar sem valor
-        if ( $this->tpAmb != 1 ) {
+        if ($this->tpAmb != 1) {
             $x = 10;
-            if( $this->orientacao == 'P' ){
+            if ($this->orientacao == 'P') {
                 $y = round($this->hPrint*2/3,0);
-            }else{
+            } else {
                 $y = round($this->hPrint/2,0);
             }
             $h = 5;
@@ -507,16 +515,18 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $this->__textBox($x,$y+14,$w,$h,$texto,$aFont,'C','C',0,'');
             $this->pdf->SetTextColor(0,0,0);
         }
+
         return $RETURN_VALUE;
-        
+
     }// fim __headerCCe
-    
+
     /**
-     * 
+     *
      * @param type $x
-     * @param int $y
+     * @param int  $y
      */
-    private function __bodyCCe($x,$y){
+    private function __bodyCCe($x,$y)
+    {
         $maxW = $this->wPrint;
         $texto = 'JUSTIFICATIVA DO CANCELAMENTO';
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'B');
@@ -527,17 +537,16 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $texto = $this->xJust;
         $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'B');
         $this->__textBox($x+2,$y+2,$maxW-2,150,$texto,$aFont,'T','L',0,'',false);
-        
-        
+
     }//fim __bodyCCe
-    
-    
+
     /**
-     * 
+     *
      * @param type $x
      * @param type $y
      */
-    private function __footerCCe($x,$y){
+    private function __footerCCe($x,$y)
+    {
         $w = $this->wPrint;
         $texto = "Este documento é uma representação gráfica do Protocolo de Cancelamento de Nota Fiscal Eletrônica e foi impresso apenas para sua informação e não possue validade fiscal.\n O Protocolo deve ser recebido e mantido em arquivo eletrônico XML e pode ser consultada através dos Portais das SEFAZ.";
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'I');
@@ -555,44 +564,45 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     }//fim __footerCCe
 
     /**
-     * 
-     * @param type $nome
-     * @param string $destino
-     * @param type $printer
+     *
+     * @param  type   $nome
+     * @param  string $destino
+     * @param  type   $printer
      * @return type
      */
-    public function printDaCancnfe($nome='',$destino='I',$printer=''){
+    public function printDaCancnfe($nome='',$destino='I',$printer='')
+    {
         $arq = $this->pdf->Output($nome,$destino);
-        if ( $destino == 'S' ){
+        if ($destino == 'S') {
             //aqui pode entrar a rotina de impressão direta
         }
+
         return $arq;
 
 /*
-	// removido - não entendi para que servia, copiei do CTE
+    // removido - não entendi para que servia, copiei do CTE
         //monta
         $command = '';
-        if ($nome == ''){
+        if ($nome == '') {
             $file = $this->pdfDir.'cce.pdf';
         } else {
             $file = $this->pdfDir.$nome;
         }
-        if (($destino != 'I' || $destino != 'S') && $destino != 'F'){
+        if (($destino != 'I' || $destino != 'S') && $destino != 'F') {
             $destino = 'I';
         }
-        if ($printer != ''){
+        if ($printer != '') {
             $command = "-P $printer";
-        } 
+        }
         $arq = $this->pdf->Output($file,$destino);
-        
-        if ( $destino == 'S' ){
+
+        if ($destino == 'S') {
             //aqui pode entrar a rotina de impressão direta
             $command = "lpr $command $file";
             system($comando,$retorno);
         }
+
         return $arq;
 */
     }//fim printCCe
 } //fim CCeNFePHP
-
-?>

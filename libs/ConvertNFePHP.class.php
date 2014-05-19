@@ -21,7 +21,7 @@
  * <http://www.fsfla.org/svnwiki/trad/GPLv3>
  * ou
  * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
- * 
+ *
  * Esta classe atende aos critérios estabelecidos no
  * Manual de Importação/Exportação TXT Notas Fiscais eletrônicas versão 2.0.0
  *
@@ -66,14 +66,14 @@ class ConvertNFePHP
     /**
      * xml
      * XML da NFe
-     * @var string 
+     * @var string
      */
     public $xml = '';
 
     /**
      * chave
      * ID da NFe 44 digitos
-     * @var string 
+     * @var string
      */
     public $chave = '';
 
@@ -116,7 +116,7 @@ class ConvertNFePHP
      * Método contrutor da classe
      *
      * @name contruct
-     * @param boolean $limparString Ativa flag para limpar os caracteres especiais e acentos
+     * @param  boolean $limparString Ativa flag para limpar os caracteres especiais e acentos
      * @return none
      */
     public function __construct($limparString = true)
@@ -129,7 +129,7 @@ class ConvertNFePHP
      * Converte o arquivo txt em um array para ser mais facilmente tratado
      *
      * @name nfetxt2xml
-     * @param mixed $txt Path para o arquivo txt, array ou o conteudo do txt em uma string
+     * @param  mixed  $txt Path para o arquivo txt, array ou o conteudo do txt em uma string
      * @return string xml construido
      */
     public function nfetxt2xml($txt)
@@ -145,6 +145,7 @@ class ConvertNFePHP
                 }
             }
         }
+
         return $this->nfeTxt2XmlArrayComLinhas($aDados);
     } //fim nfetxt2xml
 
@@ -155,7 +156,7 @@ class ConvertNFePHP
      * Notas Fiscais eletrônicas versão 2.0.0 (24/08/2010)
      *
      * @name nfeTxt2XmlArrayComLinhas
-     * @param string $arrayComAsLinhasDoArquivo Array de Strings onde cada elemento é uma linha do arquivo
+     * @param  string $arrayComAsLinhasDoArquivo Array de Strings onde cada elemento é uma linha do arquivo
      * @return string xml construido
      */
     protected function nfeTxt2XmlArrayComLinhas($arrayComAsLinhasDoArquivo)
@@ -2228,6 +2229,7 @@ class ConvertNFePHP
                 unset($xml);
             }
         }
+
         return($arquivos_xml);
     }
     //end function
@@ -2236,10 +2238,10 @@ class ConvertNFePHP
      * limpaString
      * Remove todos dos caracteres especiais do texto e os acentos
      * preservando apenas letras de A-Z numeros de 0-9 e os caracteres @ , - ; : / _
-     * 
+     *
      * @name limpaString
-     * @param string $texto String a ser limpa
-     * @return  string Texto sem caractere especiais
+     * @param  string $texto String a ser limpa
+     * @return string Texto sem caractere especiais
      */
     private function limpaString($texto)
     {
@@ -2251,16 +2253,17 @@ class ConvertNFePHP
             'E', 'E', 'I', 'O', 'O', 'O', 'U', 'U', 'C');
         $novoTexto = str_replace($aFind, $aSubs, $texto);
         $novoTexto = preg_replace("/[^a-zA-Z0-9 @,-.;:\/_]/", "", $novoTexto);
+
         return $novoTexto;
     } //fim limpaString
 
     /**
      * calculaDV
      * Função para o calculo o digito verificador da chave da NFe
-     * 
+     *
      * @name calculaDV
-     * @param string $chave43
-     * @return string 
+     * @param  string $chave43
+     * @return string
      */
     private function calculaDV($chave43)
     {
@@ -2279,6 +2282,7 @@ class ConvertNFePHP
         } else {
             $cDV = 11 - $resto;
         }
+
         return $cDV;
     } //fim calculaDV
 
@@ -2286,9 +2290,9 @@ class ConvertNFePHP
      * montaChaveXML
      * Monta a chave da NFe de 44 digitos com base em seus dados
      * Isso é útil no caso da chave formada no txt estar errada
-     * 
+     *
      * @name montaChaveXML
-     * @param object $dom 
+     * @param object $dom
      */
     private function montaChaveXML($dom)
     {

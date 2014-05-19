@@ -47,20 +47,17 @@
 //namespace nfephp\DacteNFePHP;
 
 //define o caminho base da instalação do sistema
-if (!defined('PATH_ROOT'))
-{
+if (!defined('PATH_ROOT')) {
     define('PATH_ROOT', dirname(dirname(__file__)) . DIRECTORY_SEPARATOR);
 }
 //ajuste do tempo limite de resposta do processo
 set_time_limit(1800);
 //definição do caminho para o diretorio com as fontes do FDPF
-if (!defined('FPDF_FONTPATH'))
-{
+if (!defined('FPDF_FONTPATH')) {
     define('FPDF_FONTPATH', 'font/');
 }
 //situação externa do documento
-if (!defined('NFEPHP_SITUACAO_EXTERNA_CANCELADA'))
-{
+if (!defined('NFEPHP_SITUACAO_EXTERNA_CANCELADA')) {
     define('NFEPHP_SITUACAO_EXTERNA_CANCELADA', 1);
     define('NFEPHP_SITUACAO_EXTERNA_DENEGADA', 2);
     define('NFEPHP_SITUACAO_EXTERNA_DPEC', 3);
@@ -149,7 +146,6 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected $formatPadrao;
     protected $formatNegrito;
 
-
     /**
      * __construct
      *
@@ -165,18 +161,15 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     public function __construct($docXML = '', $sOrientacao = '', $sPapel = '', $sPathLogo = '', $sDestino = 'I', $sDirPDF = '', $fonteDACTE = '', $mododebug =
         2)
     {
-        if (is_numeric($mododebug))
-        {
+        if (is_numeric($mododebug)) {
             $this->debugMode = $mododebug;
         }
-        if ($mododebug == 1)
-        {
+        if ($mododebug == 1) {
             //ativar modo debug
             error_reporting(E_ALL);
             ini_set('display_errors', 'On');
         }
-        if ($mododebug == 0)
-        {
+        if ($mododebug == 0) {
             //desativar modo debug
             error_reporting(0);
             ini_set('display_errors', 'Off');
@@ -189,8 +182,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->destino = $sDestino;
         $this->pdfDir = $sDirPDF;
         // verifica se foi passa a fonte a ser usada
-        if (!empty($fonteDACTE))
-        {
+        if (!empty($fonteDACTE)) {
             $this->fontePadrao = $fonteDACTE;
         }
         $this->formatPadrao = array(
@@ -202,8 +194,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'size' => 8,
             'style' => 'B');
         //se for passado o xml
-        if (!empty($this->xml))
-        {
+        if (!empty($this->xml)) {
             $this->dom = new DomDocument;
             $this->dom->loadXML($this->xml);
             $this->cteProc = $this->dom->getElementsByTagName("cteProc")->item(0);
@@ -242,8 +233,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->toma03 = $this->dom->getElementsByTagName("toma03")->item(0);
             $tomador = $this->__simpleGetValue($this->toma03, "toma");
             //0-Remetente;1-Expedidor;2-Recebedor;3-Destinatário;4-Outros
-            switch ($tomador)
-            {
+            switch ($tomador) {
                 case '0':
                     $this->toma = $this->rem;
                     $this->enderToma = $this->enderReme;
@@ -266,8 +256,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                     break;
             }
             $seguro = $this->__simpleGetValue($this->seg, "respSeg");
-            switch ($seguro)
-            {
+            switch ($seguro) {
                 case '0':
                     $this->respSeg = 'Remetente';
                     break;
@@ -305,8 +294,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
      */
     public function simpleConsistencyCheck()
     {
-        if (1 == 2 || $this->xml == null || $this->infCte == null || $this->ide == null)
-        {
+        if (1 == 2 || $this->xml == null || $this->infCte == null || $this->ide == null) {
             return false;
         }
 
@@ -344,6 +332,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         /* NÃO ERA NECESSÁRIO ESSA FUNÇÃO POIS SÓ SE USA 1 VEZ NO ARQUIVO INTEIRO) */
         $cStat = $this->__simpleGetValue($this->cteProc, "cStat");
+
         return $cStat == '101' || $cStat == '135' || $this->situacao_externa == NFEPHP_SITUACAO_EXTERNA_CANCELADA;
     }
 
@@ -356,6 +345,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         /* NÃO ERA NECESSÁRIO ESSA FUNÇÃO POIS SÓ SE USA 1 VEZ NO ARQUIVO INTEIRO) */
         $cStat = $this->__simpleGetValue($this->cteProc, "cStat");
+
         return $cStat == '110' || $cStat == '301' || $cStat == '302' || $this->situacao_externa == NFEPHP_SITUACAO_EXTERNA_DENEGADA;
     }
 
@@ -367,8 +357,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * pelo conteúdo da funçao e podem ser modificados.
      *
      * @param  string $orientacao (Opcional) Estabelece a orientação da
-     *                impressão (ex. P-retrato), se nada for fornecido será
-     *                usado o padrão da NFe
+     *                            impressão (ex. P-retrato), se nada for fornecido será
+     *                            usado o padrão da NFe
      * @param  string $papel      (Opcional) Estabelece o tamanho do papel (ex. A4)
      * @return string O ID da NFe numero de 44 digitos extraido do arquivo XML
      */
@@ -376,13 +366,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         '')
     {
         //se a orientação estiver em branco utilizar o padrão estabelecido na NF
-        if ($orientacao == '')
-        {
-            if ($this->tpImp == '1')
-            {
+        if ($orientacao == '') {
+            if ($this->tpImp == '1') {
                 $orientacao = 'P';
-            } else
-            {
+            } else {
                 $orientacao = 'P'; //TO-DO L
             }
         }
@@ -393,15 +380,12 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->situacao_externa = $situacao_externa;
         $this->numero_registro_dpec = $DPEC_NUMERO_REGISTRO;
         //instancia a classe pdf
-        if ($CLASSE_PDF !== false)
-        {
+        if ($CLASSE_PDF !== false) {
             $this->pdf = $CLASSE_PDF;
-        } else
-        {
+        } else {
             $this->pdf = new PdfNFePHP($this->orientacao, 'mm', $this->papel);
         }
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             // margens do PDF
             $margSup = 2;
             $margEsq = 2;
@@ -409,13 +393,11 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             // posição inicial do relatorio
             $xInic = 1;
             $yInic = 1;
-            if ($papel == 'A4')
-            { //A4 210x297mm
+            if ($papel == 'A4') { //A4 210x297mm
                 $maxW = 210;
                 $maxH = 297;
             }
-        } else
-        {
+        } else {
             // margens do PDF
             $margSup = 3;
             $margEsq = 3;
@@ -423,8 +405,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             // posição inicial do relatorio
             $xInic = 5;
             $yInic = 5;
-            if ($papel == 'A4')
-            { //A4 210x297mm
+            if ($papel == 'A4') { //A4 210x297mm
                 $maxH = 210;
                 $maxW = 297;
                 $this->wCanhoto = 25;
@@ -471,8 +452,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $x = $xInic;
         $r = $this->tomadorDACTE($x, $y);
 
-        if ($this->tpCTe == '0') //Normal
-        {
+        if ($this->tpCTe == '0') { //Normal
 
             $y += 10;
             $x = $xInic;
@@ -486,23 +466,18 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $y += 13;
             $x = $xInic;
             $r = $this->docOrigDACTE($x, $y);
-            if ($this->modal == '1')
-            {
-                if ($this->lota == 1)
-                {
+            if ($this->modal == '1') {
+                if ($this->lota == 1) {
                     $y += 24.95;
-                } else
-                {
+                } else {
                     $y += 53;
                 }
-            } else
-            {
+            } else {
                 $y += 24.95;
             }
             $x = $xInic;
             $r = $this->obsDACTE($x, $y);
-            switch ($this->modal)
-            {
+            switch ($this->modal) {
                 case '1':
                     $y += 17.9;
                     $x = $xInic;
@@ -529,21 +504,16 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                     $r = $this->__modalDutoviarioDACTE($x, $y);
                     break;
             }
-            if ($this->modal == '1')
-            {
-                if ($this->lota == 1)
-                {
+            if ($this->modal == '1') {
+                if ($this->lota == 1) {
                     $y += 37;
-                } else
-                {
+                } else {
                     $y += 8.9;
                 }
-            } else
-            {
+            } else {
                 $y += 37;
             }
-        } else //Complementado
-        {
+        } else { //Complementado
             $y += 10;
             $x = $xInic;
             $r = $this->__documentosComplementadosDACTE($x, $y);
@@ -567,20 +537,17 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $x = $xInic;
         $r = $this->dadosAdicDACTE($x, $y, $pag, $totPag);
         //coloca o rodapé da página
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $this->rodapeDACTE(2, $this->hPrint - 2);
-        } else
-        {
+        } else {
             $this->rodapeDACTE($xInic, $this->hPrint + 2.3);
         }
         //retorna o ID na CTe
-        if ($CLASSE_PDF !== false)
-        {
+        if ($CLASSE_PDF !== false) {
             $aR = array('id' => str_replace('CTe', '', $this->infCte->getAttribute("Id")), 'classe_PDF' => $this->pdf);
+
             return $aR;
-        } else
-        {
+        } else {
             return str_replace('CTe', '', $this->infCte->getAttribute("Id"));
         }
     } //fim da função montaDACTE
@@ -605,8 +572,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     public function printDACTE($nome = '', $destino = 'I', $printer = '')
     {
         $arq = $this->pdf->Output($nome, $destino);
-        if ($destino == 'S')
-        {
+        if ($destino == 'S') {
             //aqui pode entrar a rotina de impressão direta
         }
 
@@ -627,30 +593,24 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $oldX = $x;
         $oldY = $y;
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
-        } else
-        {
-            if ($pag == 1)
-            { // primeira página
+        } else {
+            if ($pag == 1) { // primeira página
                 $maxW = $this->wPrint - $this->wCanhoto;
-            } else
-            { // páginas seguintes
+            } else { // páginas seguintes
                 $maxW = $this->wPrint;
             }
         }
         //##################################################################
         //coluna esquerda identificação do emitente
         $w = round($maxW * 0.42);
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $aFont = array(
                 'font' => $this->fontePadrao,
                 'size' => 6,
                 'style' => '');
-        } else
-        {
+        } else {
             $aFont = $this->formatNegrito;
         }
         $w1 = $w;
@@ -659,15 +619,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //desenha a caixa
         $this->__textBox($x, $y, $w + 2, $h + 1);
         // coloca o logo
-        if (is_file($this->logomarca))
-        {
+        if (is_file($this->logomarca)) {
             $logoInfo = getimagesize($this->logomarca);
             //largura da imagem em mm
             $logoWmm = ($logoInfo[0] / 72) * 25.4;
             //altura da imagem em mm
             $logoHmm = ($logoInfo[1] / 72) * 25.4;
-            if ($this->logoAlign == 'L')
-            {
+            if ($this->logoAlign == 'L') {
                 $nImgW = round($w / 3, 0);
                 $nImgH = round($logoHmm * ($nImgW / $logoWmm), 0);
                 $xImg = $x + 1;
@@ -677,8 +635,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $y1 = round($h / 3 + $y, 0);
                 $tw = round(2 * $w / 3, 0);
             }
-            if ($this->logoAlign == 'C')
-            {
+            if ($this->logoAlign == 'C') {
                 $nImgH = round($h / 3, 0);
                 $nImgW = round($logoWmm * ($nImgH / $logoHmm), 0);
                 $xImg = round(($w - $nImgW) / 2 + $x, 0);
@@ -687,8 +644,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $y1 = round($yImg + $nImgH + 1, 0);
                 $tw = $w;
             }
-            if ($this->logoAlign == 'R')
-            {
+            if ($this->logoAlign == 'R') {
                 $nImgW = round($w / 3, 0);
                 $nImgH = round($logoHmm * ($nImgW / $logoWmm), 0);
                 $xImg = round($x + ($w - (1 + $nImgW)), 0);
@@ -698,8 +654,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $tw = round(2 * $w / 3, 0);
             }
             $this->pdf->Image($this->logomarca, $xImg, $yImg, $nImgW, $nImgH, 'jpeg');
-        } else
-        {
+        } else {
             $x1 = $x;
             $y1 = round($h / 3 + $y, 0);
             $tw = $w;
@@ -749,8 +704,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $tpCTe = $this->__simpleGetValue($this->ide, "tpCTe");
         //0 - CT-e Normal,1 - CT-e de Complemento de Valores,
         //2 - CT-e de Anulação de Valores,3 - CT-e Substituto
-        switch ($tpCTe)
-        {
+        switch ($tpCTe) {
             case '0':
                 $texto = 'Normal';
                 break;
@@ -778,8 +732,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->__textBox($x + $wa + 4.5, $y1, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '');
         $tpServ = $this->__simpleGetValue($this->ide, "tpServ");
         //0 - Normal;1 - Subcontratação;2 - Redespacho;3 - Redespacho Intermediário
-        switch ($tpServ)
-        {
+        switch ($tpServ) {
             case '0':
                 $texto = 'Normal';
                 break;
@@ -811,8 +764,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->pdf->Line($x, $y1 + 8, $w + 3, $y1 + 8);
         $toma = $this->__simpleGetValue($this->ide, "toma");
         //0-Remetente;1-Expedidor;2-Recebedor;3-Destinatário;4 - Outros
-        switch ($toma)
-        {
+        switch ($toma) {
             case '0':
                 $texto = 'Remetente';
                 break;
@@ -843,8 +795,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->__textBox($x + $wa + 4.5, $y2, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '');
         $forma = $this->__simpleGetValue($this->ide, "forPag");
         //0 - Pago;1 - A pagar;2 - outros
-        switch ($forma)
-        {
+        switch ($forma) {
             case '0':
                 $texto = 'Pago';
                 break;
@@ -894,8 +845,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //01-Rodoviário; //02-Aéreo; //03-Aquaviário; //04-Ferroviário;//05-Dutoviário
         $modal = $this->__simpleGetValue($this->ide, "modal");
         $this->modal = $modal;
-        switch ($modal)
-        {
+        switch ($modal) {
             case '1':
                 $texto = 'Rodoviário';
                 break;
@@ -1021,22 +971,18 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->__textBox($x, $y + $h1 + 8, $w + 0.5, $h1 - 4.5);
         $texto = "Consulta de autenticidade no portal nacional do CT-e, ";
         $texto .= "no site da Sefaz Autorizadora, \r\n ou em http://www.cte.fazenda.gov.br";
-        if ($this->tpEmis == 5 || $this->tpEmis == 7 || $this->tpEmis == 8)
-        {
+        if ($this->tpEmis == 5 || $this->tpEmis == 7 || $this->tpEmis == 8) {
             $texto = "";
             $this->pdf->SetFillColor(0, 0, 0);
-            if ($this->tpEmis == 5)
-            {
+            if ($this->tpEmis == 5) {
 
                 $chaveContingencia = $this->__geraChaveAdicionalDeContingencia();
                 $this->pdf->Code128($x + 20, $y1 + 10, $chaveContingencia, $bW * .9, $bH / 2);
 
-            } else
-            {
+            } else {
                 $chaveContingencia = $this->__simpleGetValue($this->protCTe, "nProt");
                 $this->pdf->Code128($x + 40, $y1 + 10, $chaveContingencia, $bW * .4 , $bH / 2);
             }
-
 
             //codigo de barras
 
@@ -1052,24 +998,19 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $h = 8.5;
         $wa = $w;
         $this->__textBox($x, $y + 7.5, $w + 0.5, $h);
-        if ($this->__cteDPEC())
-        {
+        if ($this->__cteDPEC()) {
             $texto = 'NÚMERO DE REGISTRO DPEC';
-        } elseif ($this->tpEmis == 5 || $this->tpEmis == 7 || $this->tpEmis == 8)
-        {
+        } elseif ($this->tpEmis == 5 || $this->tpEmis == 7 || $this->tpEmis == 8) {
             $texto = "DADOS DO CT-E";
-        } else
-        {
+        } else {
             $texto = 'PROTOCOLO DE AUTORIZAÇÃO DE USO';
         }
         $aFont = $this->formatPadrao;
         $this->__textBox($x, $y + 7.5, $wa, $h, $texto, $aFont, 'T', 'L', 0, '');
-        if ($this->__cteDPEC())
-        {
+        if ($this->__cteDPEC()) {
             $texto = $this->numero_registro_dpec;
 
-        } elseif ($this->tpEmis == 5)
-        {
+        } elseif ($this->tpEmis == 5) {
             $chaveContingencia = $this->__geraChaveAdicionalDeContingencia();
             $aFont = array(
                 'font' => $this->fontePadrao,
@@ -1078,8 +1019,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $texto = $this->__format($chaveContingencia, "#### #### #### #### #### #### #### #### ####");
             $cStat = '';
 
-        } else
-        {
+        } else {
             $texto = $this->__simpleGetValue($this->protCTe, "nProt") . " - ";
             $texto .= date('d/m/Y   H:i:s', $this->__convertTime($this->__simpleGetValue($this->protCTe, "dhRecbto")));
             $texto = $this->__simpleGetValue($this->protCTe, "nProt") == '' ? '' : $texto;
@@ -1135,8 +1075,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //Indicação de CTe Homologação, cancelamento e falta de protocolo
         $tpAmb = $this->ide->getElementsByTagName('tpAmb')->item(0)->nodeValue;
         //indicar cancelamento
-        if ($this->__cteCancelada())
-        {
+        if ($this->__cteCancelada()) {
             //101 Cancelamento
             $x = 10;
             $y = $this->hPrint - 130;
@@ -1151,8 +1090,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
             $this->pdf->SetTextColor(0, 0, 0);
         }
-        if ($this->__cteDenegada())
-        {
+        if ($this->__cteDenegada()) {
             //110 Denegada
             $x = 10;
             $y = $this->hPrint - 130;
@@ -1177,14 +1115,11 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->pdf->SetTextColor(0, 0, 0);
         }
         //indicar sem valor
-        if ($tpAmb != 1)
-        {
+        if ($tpAmb != 1) {
             $x = 10;
-            if ($this->orientacao == 'P')
-            {
+            if ($this->orientacao == 'P') {
                 $y = round($this->hPrint * 2 / 3, 0);
-            } else
-            {
+            } else {
                 $y = round($this->hPrint / 2, 0);
             }
             $h = 5;
@@ -1203,22 +1138,18 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $texto = "AMBIENTE DE HOMOLOGAÇÃO";
             $this->__textBox($x, $y + 14, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
             $this->pdf->SetTextColor(0, 0, 0);
-        } else
-        {
+        } else {
             $x = 10;
-            if ($this->orientacao == 'P')
-            {
+            if ($this->orientacao == 'P') {
                 $y = round($this->hPrint * 2 / 3, 0);
-            } else
-            {
+            } else {
                 $y = round($this->hPrint / 2, 0);
             } //fim orientacao
             $h = 5;
             $w = $maxW - (2 * $x);
             $this->pdf->SetTextColor(90, 90, 90);
             //indicar FALTA DO PROTOCOLO se NFe não for em contingência
-            if (($this->tpEmis == 5 || $this->tpEmis == 7 || $this->tpEmis == 8) && !$this->__cteDPEC())
-            {
+            if (($this->tpEmis == 5 || $this->tpEmis == 7 || $this->tpEmis == 8) && !$this->__cteDPEC()) {
                 //Contingência
                 $texto = "DACTE Emitido em Contingência";
                 $aFont = array(
@@ -1232,12 +1163,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                     'style' => 'B');
                 $texto = "devido à problemas técnicos";
                 $this->__textBox($x, $y + 12, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
-            } else
-            {
-                if (!isset($this->cteProc))
-                {
-                    if (!$this->__cteDPEC())
-                    {
+            } else {
+                if (!isset($this->cteProc)) {
+                    if (!$this->__cteDPEC()) {
                         $texto = "SEM VALOR FISCAL";
                         $aFont = array(
                             'font' => $this->fontePadrao,
@@ -1250,16 +1178,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                         'size' => 30,
                         'style' => 'B');
                     $texto = "FALTA PROTOCOLO DE APROVAÇÃO DA SEFAZ";
-                    if (!$this->__cteDPEC())
-                    {
+                    if (!$this->__cteDPEC()) {
                         $this->__textBox($x, $y + 12, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
-                    } else
-                    {
+                    } else {
                         $this->__textBox($x, $y + 25, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
                     }
                 } //fim cteProc
-                if ($this->tpEmis == 4)
-                {
+                if ($this->tpEmis == 4) {
                     //DPEC
                     $x = 10;
                     $y = $this->hPrint - 130;
@@ -1277,6 +1202,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             } //fim tpEmis
             $this->pdf->SetTextColor(0, 0, 0);
         }
+
         return $oldY;
     } //fim __cabecalhoDANFE
 
@@ -1316,11 +1242,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $oldX = $x;
         $oldY = $y;
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
-        } else
-        {
+        } else {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = $maxW * 0.5 + 0.5;
@@ -1403,11 +1327,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $oldX = $x;
         $oldY = $y;
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
-        } else
-        {
+        } else {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = ($maxW * 0.5) - 0.7;
@@ -1490,11 +1412,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $oldX = $x;
         $oldY = $y;
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
-        } else
-        {
+        } else {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = $maxW * 0.5 + 0.5;
@@ -1511,13 +1431,11 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $aFont = $this->formatPadrao;
         $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $aFont = $this->formatNegrito;
-        if (isset($this->enderExped))
-        {
+        if (isset($this->enderExped)) {
             $texto = $this->__simpleGetValue($this->enderExped, "xLgr") . ', ';
             $texto .= $this->__simpleGetValue($this->enderExped, "nro");
             $texto .= $this->__simpleGetValue($this->enderExped, "xCpl") != "" ? ' - ' . $this->__simpleGetValue($this->enderExped, "xCpl") : '';
-        } else
-        {
+        } else {
             $texto = '';
         }
         $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
@@ -1528,12 +1446,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'MUNICÍPIO';
         $aFont = $this->formatPadrao;
         $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        if (isset($this->enderExped))
-        {
+        if (isset($this->enderExped)) {
             $texto = $this->__simpleGetValue($this->enderExped, "xMun") . ' - ';
             $texto .= $this->__simpleGetValue($this->enderExped, "UF");
-        } else
-        {
+        } else {
             $texto = '';
         }
         $aFont = $this->formatNegrito;
@@ -1572,8 +1488,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'FONE';
         $aFont = $this->formatPadrao;
         $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        if (isset($this->exped))
-        {
+        if (isset($this->exped)) {
             $texto = $this->formatFone($this->exped);
             $aFont = $this->formatNegrito;
             $this->__textBox($x + 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
@@ -1592,11 +1507,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $oldX = $x;
         $oldY = $y;
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
-        } else
-        {
+        } else {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = ($maxW * 0.5) - 0.7;
@@ -1613,13 +1526,11 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $aFont = $this->formatPadrao;
         $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $aFont = $this->formatNegrito;
-        if (isset($this->enderReceb))
-        {
+        if (isset($this->enderReceb)) {
             $texto = $this->__simpleGetValue($this->enderReceb, "xLgr") . ', ';
             $texto .= $this->__simpleGetValue($this->enderReceb, "nro");
             $texto .= ($this->__simpleGetValue($this->enderReceb, "xCpl") != "") ? ' - ' . $this->__simpleGetValue($this->enderReceb, "xCpl") : '';
-        } else
-        {
+        } else {
             $texto = '';
         }
         $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
@@ -1630,12 +1541,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'MUNICÍPIO';
         $aFont = $this->formatPadrao;
         $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        if (isset($this->enderReceb))
-        {
+        if (isset($this->enderReceb)) {
             $texto = $this->__simpleGetValue($this->enderReceb, "xMun") . ' - ';
             $texto .= $this->__simpleGetValue($this->enderReceb, "UF");
-        } else
-        {
+        } else {
             $texto = '';
         }
         $aFont = $this->formatNegrito;
@@ -1674,8 +1583,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'FONE';
         $aFont = $this->formatPadrao;
         $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        if (isset($this->receb))
-        {
+        if (isset($this->receb)) {
             $texto = $this->formatFone($this->receb);
             $aFont = $this->formatNegrito;
             $this->__textBox($x + 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
@@ -1781,11 +1689,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $oldX = $x;
         $oldY = $y;
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
-        } else
-        {
+        } else {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = $maxW;
@@ -1957,11 +1863,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $oldX = $x;
         $oldY = $y;
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
-        } else
-        {
+        } else {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = $maxW;
@@ -2023,12 +1927,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->__textBox($x, $y + 4, $w * 0.14, $h, $texto, $aFont, 'T', 'C', 0, '');
         $auxX = $oldX;
         $yIniDados += 4;
-        foreach ($this->Comp as $k => $d)
-        {
+        foreach ($this->Comp as $k => $d) {
             $nome = $this->Comp->item($k)->getElementsByTagName('xNome')->item(0)->nodeValue;
             $valor = number_format($this->Comp->item($k)->getElementsByTagName('vComp')->item(0)->nodeValue, 2, ",", ".");
-            if ($auxX > $w * 0.60)
-            {
+            if ($auxX > $w * 0.60) {
                 $yIniDados = $yIniDados + 4;
                 $auxX = $oldX;
             }
@@ -2055,11 +1957,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $oldX = $x;
         $oldY = $y;
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
-        } else
-        {
+        } else {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = $maxW;
@@ -2100,8 +2000,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $x = $oldX;
         $y = $y + 4;
         $texto = $this->__simpleGetValue($this->ICMS, "CST");
-        switch ($texto)
-        {
+        switch ($texto) {
             case '00':
                 $texto = "00 - Tributação normal ICMS";
                 break;
@@ -2155,7 +2054,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
 
     /**
      * __geraChaveAdicionalDeContingencia
-     *   
+     *
      * @name __geraChaveAdicionalDeContingencia
      * @version 1.0
      * @author Marcos Diez (NFe)
@@ -2171,8 +2070,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $CNPJ = substr($CNPJ, -14);
         $vCT = number_format($this->__simpleGetValue($this->vPrest, "vRec"), 2, "", "") * 100;
         $ICMS_CST = $this->__simpleGetValue($this->ICMS, "CST");
-        switch ($ICMS_CST)
-        {
+        switch ($ICMS_CST) {
             case '00':
             case '20':
                 $ICMSp = '1';
@@ -2196,6 +2094,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $dd = substr($dd, $rpos + 1);
         $chave = sprintf($forma, $cUF, $this->tpEmis, $CNPJ, $vCT, $ICMSp, $ICMSs, $dd);
         $chave = $chave . $this->__modulo11($chave);
+
         return $chave;
     } //fim __geraChaveAdicionalDeContingencia
 
@@ -2211,20 +2110,16 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $oldX = $x;
         $oldY = $y;
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
-        } else
-        {
+        } else {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = $maxW;
 
-        if ($this->modal == '1')
-        {
+        if ($this->modal == '1') {
             $h = $this->lota == 1 ? 25 : 53;
-        } else
-        {
+        } else {
             $h = 25;
         }
         $texto = 'DOCUMENTOS ORIGINÁRIOS';
@@ -2248,17 +2143,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $aFont = $this->formatPadrao;
         $this->__textBox($x, $y, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.13;
-        if ($this->modal == '1')
-        {
-            if ($this->lota == 1)
-            {
+        if ($this->modal == '1') {
+            if ($this->lota == 1) {
                 $this->pdf->Line($x, $y, $x, $y + 21.5);
-            } else
-            {
+            } else {
                 $this->pdf->Line($x, $y, $x, $y + 49.5);
             }
-        } else
-        {
+        } else {
             $this->pdf->Line($x, $y, $x, $y + 21.5);
         }
         $texto = $descr1;
@@ -2274,14 +2165,12 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->__textBox($x, $y, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '');
         $auxX = $oldX;
         $yIniDados += 4;
-        foreach ($this->infNF as $k => $d)
-        {
+        foreach ($this->infNF as $k => $d) {
             $tp = $this->infNF->item($k)->getElementsByTagName('mod')->item(0)->nodeValue;
             $cnpj = $this->formatCNPJCPF($this->rem);
             $doc = $this->infNF->item($k)->getElementsByTagName('serie')->item(0)->nodeValue;
             $doc .= '/' . $this->infNF->item($k)->getElementsByTagName('nDoc')->item(0)->nodeValue;
-            if ($auxX > $w * 0.90)
-            {
+            if ($auxX > $w * 0.90) {
                 $yIniDados = $yIniDados + 4;
                 $auxX = $oldX;
             }
@@ -2307,15 +2196,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->__textBox($auxX, $yIniDados, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '');
             $auxX += $w * 0.14;
         }
-        foreach ($this->infNFe as $k => $d)
-        {
+        foreach ($this->infNFe as $k => $d) {
             $tp = 'NFE';
             $chaveNFe = $this->infNFe->item($k)->getElementsByTagName('chave')->item(0)->nodeValue;
             $numNFe = substr($chaveNFe, 25, 9);
             $serieNFe = substr($chaveNFe, 22, 3);
             $doc = $serieNFe . '/' . $numNFe;
-            if ($auxX > $w * 0.90)
-            {
+            if ($auxX > $w * 0.90) {
                 $yIniDados = $yIniDados + 4;
                 $auxX = $oldX;
             }
@@ -2343,26 +2230,23 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         }
     } //fim da função docOrigDACTE
 
-
     /**
      * __documentosComplementadosDACTE
      * Monta o campo com os dados do remetente na DACTE. ( retrato  e paisagem  )
      * @package NFePHP
      * @name __documentosComplementadosDACTE
      * @version 1.2.1
-     * @param number $x Posição horizontal canto esquerdo
-     * @param number $y Posição vertical canto superior
-     * @return number Posição vertical final 
+     * @param  number $x Posição horizontal canto esquerdo
+     * @param  number $y Posição vertical canto superior
+     * @return number Posição vertical final
      */
     protected function __documentosComplementadosDACTE($x = 0, $y = 0)
     {
         $oldX = $x;
         $oldY = $y;
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
-        } else
-        {
+        } else {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = $maxW;
@@ -2373,10 +2257,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $aFont = $this->formatPadrao;
         $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
 
-
         $descr1 = 'CHAVE DO CT-E COMPLEMENTADO';
         $descr2 = 'VALOR COMPLEMENTADO';
-
 
         $y += 3.4;
         $this->pdf->Line($x, $y, $w + 1, $y);
@@ -2392,7 +2274,6 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = $descr2;
         $aFont = $this->formatPadrao;
         $this->__textBox($x - 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-
 
         $x += $w * 0.13;
 
@@ -2410,9 +2291,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $auxX = $oldX;
         $yIniDados += 4;
 
-
-        if ($auxX > $w * 0.90)
-        {
+        if ($auxX > $w * 0.90) {
             $yIniDados = $yIniDados + 4;
             $auxX = $oldX;
         }
@@ -2430,7 +2309,6 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'style' => '');
         $this->__textBox($w * 0.40, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
 
-
     } //fim da função __documentosComplementadosDACTE
 
     /**
@@ -2445,11 +2323,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $oldX = $x;
         $oldY = $y;
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
-        } else
-        {
+        } else {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = $maxW;
@@ -2464,8 +2340,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $auxX = $oldX;
         $yIniDados = $y;
         $texto = '';
-        foreach ($this->compl as $k => $d)
-        {
+        foreach ($this->compl as $k => $d) {
             $xObs = $this->__simpleGetValue($this->compl->item($k), "xObs");
             $texto .= "\r\n" . $xObs;
         }
@@ -2486,8 +2361,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected function localEntregaAdic()
     {
         $locEntX = $this->dest->getElementsByTagName('locEnt');
-        if ($locEntX->length > 0)
-        {
+        if ($locEntX->length > 0) {
             $locEnt = $locEntX->item(0);
             $output = "Entrega: " . $output = $this->formatCNPJCPF($locEnt);
             $output .= $this->__simpleGetValue($locEnt, "CPF") . " ";
@@ -2498,8 +2372,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $output .= $this->__simpleGetValue($locEnt, "xBairro") . " ";
             $output .= $this->__simpleGetValue($locEnt, "xMun") . " ";
             $output .= $this->__simpleGetValue($locEnt, "UF") . " ";
+
             return $output;
         }
+
         return "";
     } //fim localEntregaAdic
 
@@ -2515,27 +2391,22 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $oldX = $x;
         $oldY = $y;
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
-        } else
-        {
+        } else {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = $maxW;
-        if ($this->modal == '1')
-        {
+        if ($this->modal == '1') {
             $h = $this->lota == 1 ? 12.5 : 3.7;
-        } else
-        {
+        } else {
             $h = 12.5;
         }
         $textolota = $this->lota == 1 ? 'LOTAÇÃO' : 'CARGA FRACIONADA';
         $texto = 'DADOS ESPECÍFICOS DO MODAL RODOVIÁRIO - ' . $textolota;
         $aFont = $this->formatPadrao;
         $this->__textBox($x, $y, $w, $h * 3.2, $texto, $aFont, 'T', 'C', 1, '');
-        if ($this->lota == 1)
-        {
+        if ($this->lota == 1) {
             $this->pdf->Line($x, $y + 12, $w + 1, $y + 12);
         }
         $y += 3.4;
@@ -2569,8 +2440,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto .= ' À LEGISLAÇÃO DE TRANSPORTE RODOVIÁRIO EM VIGOR';
         $aFont = $this->formatPadrao;
         $this->__textBox($x, $y + 1, $w * 0.50, $h, $texto, $aFont, 'T', 'C', 0, '');
-        if ($this->lota == 1)
-        {
+        if ($this->lota == 1) {
             $y += 10;
             $x = 1;
             $texto = 'IDENTIFICAÇÃO DO CONJUNTO TRANSPORTADOR';
@@ -2582,14 +2452,11 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $aFont = $this->formatPadrao;
             $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
             $yIniDados = $y;
-            if (count($this->veic) >= 0)
-            {
-                foreach ($this->veic as $k => $d)
-                {
+            if (count($this->veic) >= 0) {
+                foreach ($this->veic as $k => $d) {
                     $yIniDados = $yIniDados + 3;
                     $texto = $this->__simpleGetValue($this->veic->item($k), "tpVeic");
-                    switch ($texto)
-                    {
+                    switch ($texto) {
                         case '0':
                             $texto = 'Tração';
                             break;
@@ -2612,10 +2479,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
             $this->pdf->Line($x, $y, $x, $y + 14);
             $yIniDados = $y;
-            if (count($this->veic) >= 0)
-            {
-                foreach ($this->veic as $k => $d)
-                {
+            if (count($this->veic) >= 0) {
+                foreach ($this->veic as $k => $d) {
                     $yIniDados = $yIniDados + 3;
                     $texto = $this->__simpleGetValue($this->veic->item($k), "placa");
                     $aFont = array(
@@ -2631,10 +2496,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
             $this->pdf->Line($x, $y, $x, $y + 23);
             $yIniDados = $y;
-            if (count($this->veic) >= 0)
-            {
-                foreach ($this->veic as $k => $d)
-                {
+            if (count($this->veic) >= 0) {
+                foreach ($this->veic as $k => $d) {
                     $yIniDados = $yIniDados + 3;
                     $texto = $this->__simpleGetValue($this->veic->item($k), "UF");
                     $aFont = array(
@@ -2650,10 +2513,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
             $this->pdf->Line($x, $y, $x, $y + 14);
             $yIniDados = $y;
-            if (count($this->veic) >= 0)
-            {
-                foreach ($this->veic as $k => $d)
-                {
+            if (count($this->veic) >= 0) {
+                foreach ($this->veic as $k => $d) {
                     $yIniDados = $yIniDados + 3;
                     $texto = $this->__simpleGetValue($this->veic->item($k), "RNTRC");
                     $aFont = array(
@@ -2744,11 +2605,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $oldX = $x;
         $oldY = $y;
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
-        } else
-        {
+        } else {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = $maxW;
@@ -3024,11 +2883,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $oldX = $x;
         $oldY = $y;
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
-        } else
-        {
+        } else {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = $maxW - 1;
@@ -3102,11 +2959,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $oldX = $x;
         //###########################################################################
         //DADOS ADICIONAIS DACTE
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $w = $this->wPrint;
-        } else
-        {
+        } else {
             $w = $this->wPrint - $this->wCanhoto;
         }
         //INFORMAÇÕES COMPLEMENTARES
@@ -3131,11 +2986,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = "RESERVADO AO FISCO";
         $x += $w;
         $y -= 1;
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $w = $this->wPrint - $w;
-        } else
-        {
+        } else {
             $w = $this->wPrint - $w - $this->wCanhoto;
         }
         $aFont = array(
@@ -3155,8 +3008,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $dhCont = date('d/m/Y H:i:s', $this->__convertTime($this->__simpleGetValue($this->ide, "dhCont")));
         $dhCont = ' Entrada em contingência : ' . $dhCont;
         $texto = '';
-        switch ($this->tpEmis)
-        {
+        switch ($this->tpEmis) {
             case 2:
                 $texto = 'CONTINGÊNCIA FS' . $dhCont . $xJust;
                 break;
@@ -3192,12 +3044,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $this->pdf->SetLineWidth($h);
         $wDash = ($w / $n) / 2; // comprimento dos traços
-        for ($i = $x; $i <= $x + $w; $i += $wDash + $wDash)
-        {
-            for ($j = $i; $j <= ($i + $wDash); $j++)
-            {
-                if ($j <= ($x + $w - 1))
-                {
+        for ($i = $x; $i <= $x + $w; $i += $wDash + $wDash) {
+            for ($j = $i; $j <= ($i + $wDash); $j++) {
+                if ($j <= ($x + $w - 1)) {
                     $this->pdf->Line($j, $y, $j + 1, $y);
                 }
             }
@@ -3219,14 +3068,12 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $this->pdf->SetLineWidth($w);
         /* Organizando valores */
-        if ($y > $yfinal)
-        {
+        if ($y > $yfinal) {
             $aux = $yfinal;
             $yfinal = $y;
             $y = $aux;
         }
-        while ($y < $yfinal && $n > 0)
-        {
+        while ($y < $yfinal && $n > 0) {
             $this->pdf->Line($x, $y, $x, $y + 1);
             $y += 3;
             $n--;
@@ -3242,19 +3089,17 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
      */
     protected function formatCNPJCPF($field)
     {
-        if (!isset($field))
-        {
+        if (!isset($field)) {
             return '';
         }
         $cnpj = !empty($field->getElementsByTagName("CNPJ")->item(0)->nodeValue) ? $field->getElementsByTagName("CNPJ")->item(0)->nodeValue : "";
-        if ($cnpj != "" && $cnpj != "00000000000000")
-        {
+        if ($cnpj != "" && $cnpj != "00000000000000") {
             $cnpj = $this->__format($cnpj, '###.###.###/####-##');
-        } else
-        {
+        } else {
             $cnpj = !empty($field->getElementsByTagName("CPF")->item(0)->nodeValue) ? $this->__format($field->getElementsByTagName("CPF")->item(0)->nodeValue,
                 '###.###.###.###-##') : '';
         }
+
         return $cnpj;
     } //fim formatCNPJCPF
 
@@ -3269,13 +3114,11 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $fone = !empty($field->getElementsByTagName("fone")->item(0)->nodeValue) ? $field->getElementsByTagName("fone")->item(0)->nodeValue : '';
         $foneLen = strlen($fone);
-        if ($foneLen > 0)
-        {
+        if ($foneLen > 0) {
             $fone2 = substr($fone, 0, $foneLen - 4);
             $fone1 = substr($fone, 0, $foneLen - 8);
             $fone = '(' . $fone1 . ') ' . substr($fone2, -4) . '-' . substr($fone, -4);
-        } else
-        {
+        } else {
             $fone = '';
         }
 
@@ -3291,8 +3134,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
      */
     protected function unidade($c = '')
     {
-        switch ($c)
-        {
+        switch ($c) {
             case '00':
                 $r = 'M3';
                 break;
@@ -3327,10 +3169,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
      */
     protected function convertUnidTrafego($U = '')
     {
-        if ($U)
-        {
-            switch ($U)
-            {
+        if ($U) {
+            switch ($U) {
                 case '0':
                     $stringU = 'Próprio';
                     break;
@@ -3358,8 +3198,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
      */
     protected function multiUniPeso($U = '')
     {
-        if ($U === "01")
-        {
+        if ($U === "01") {
             // tonelada
             //return 1000;
             return 1;

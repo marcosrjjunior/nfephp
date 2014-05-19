@@ -30,12 +30,12 @@
  * @version   GIT: 1.11
  * @link      http://www.nfephp.org/
  * @author    Roberto Spadim <roberto at spadim dot com dot br>
- * 
- * 
+ *
+ *
  * CONTRIBUIDORES (por ordem alfabetica):
- *            Roberto L. Machado <linux dot rlm at gmail dot com>   
+ *            Roberto L. Machado <linux dot rlm at gmail dot com>
  *            Mario Almeida <mario at grupopmz dot com dot br>
- * 
+ *
  */
 
 //define o caminho base da instalação do sistema
@@ -62,7 +62,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     public $idToken;
     public $emitToken;
     public $papel;
-    
+
     //privadas
     protected $xml; // string XML NFe
     protected $logomarca=''; // path para logomarca em jpg
@@ -108,7 +108,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         ));
 
     /**
-     * 
+     *
      * @param type $docXML
      * @param type $sPathLogo
      * @param type $mododebug
@@ -149,74 +149,75 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         }
         $this->idToken = $idToken;
         $this->emitToken = $emitToken;
-        
+
     } //fim __construct
 
     public function getIdToken()
     {
         return $this->idToken;
     }
-    
+
     public function setIdToken($str)
     {
         $this->idToken = $str;
     }
-    
+
     public function getEmitToken()
     {
         return $this->emitToken;
     }
-    
+
     public function setEmitToken($str)
     {
         $this->emitToken = $str;
     }
-    
+
     public function getPapel()
     {
         return $this->papel;
     }
-    
+
     public function setPapel($aPap)
     {
         $this->papel = $aPap;
     }
-    
+
     public function simpleConsistencyCheck()
     {
         if (1 == 2 || $this->xml == null || $this->infNFe == null || $this->ide == null) {
             return false;
         }
+
         return true;
     } //fim simpleConsistencyCheck
-    
+
     /**
-     * 
-     * @param type $orientacao
-     * @param type $papel
-     * @param type $logoAlign
+     *
+     * @param  type $orientacao
+     * @param  type $papel
+     * @param  type $logoAlign
      * @return type
      */
     public function monta ($orientacao = '', $papel = array(80, 'one-page'), $logoAlign = 'C', $detalhes = false)
     {
         return $this->montaDANFE($detalhes);
     }//fim monta
-    
+
     /**
-     * 
-     * @param type $nome
-     * @param type $destino
-     * @param type $printer
+     *
+     * @param  type $nome
+     * @param  type $destino
+     * @param  type $printer
      * @return type
      */
     public function printDocument($nome = '', $destino = 'I', $printer = '')
     {
         return $this->printDANFE($nome, $destino, $printer);
     }//fim printDocument
-    
+
     /**
      * o objetivo desta função é ler o XML e gerar o DANFE com auxilio de conversão HTML-PDF
-     * @param type $detalhes
+     * @param  type $detalhes
      * @return type
      */
     public function montaDANFE($detalhes = false)
@@ -239,7 +240,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $qtdItens = $this->det->length;
         $urlChave = $this->urlConsulta[$tpAmb][$cUF]['chave'];
         $urlQR = $this->urlConsulta[$tpAmb][$cUF]['QR'];
-        
+
         //DADOS DO EMITENTE
         $emitRazao  = $this->__simpleGetValue($this->emit, "xNome");
         $emitCnpj   = $this->__simpleGetValue($this->emit, "CNPJ");
@@ -265,7 +266,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //pag
         $tPagNome = '';
         $pagHtml = $this->pagamento($this->pag, $tPagNome);
-        
+
         //IMPOSTOS
         $impHtml = "<table width=\"100%\">\n";
         $impHtml .= "<tr>\n";
@@ -281,7 +282,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $impHtml .= "<td align='right'>".number_format($vNF, 2, ',', '.')."</td>\n";
         $impHtml .= "</tr>\n";
         $impHtml .= "</table>\n";
-        
+
         //necessário para QRCode
         $cDest  = '';
         if (isset($this->dest)) {
@@ -296,7 +297,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                     : '';
             $cDest = $consCPF.$consCNPJ.$considEstrangeiro; //documentos do consumidor
         }
-        
+
         //DADOS PARA QRCODE
         $idToken = '';
         $Token = '';
@@ -319,7 +320,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $tsProt = $this->__convertTime($dhRecbto);
         $valorProdutos = number_format($vProd, 2, ",", ".");
         $valorTotal = number_format($vNF, 2, ",", ".");
-        
+
         //CABEÇALHO
         $this->html = "";
         $this->html .= "<html>\n";
@@ -457,6 +458,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "</tr>\n";
         $this->html .= "</table>\n";
         $this->html .= "</body>\n</html>\n";
+
         return $chNFe;
     }//fim da função montaDANFE
 
@@ -500,6 +502,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             }
         } //fim foreach
         $pagHtml .= "</table>\n";
+
         return $pagHtml;
     }
 
@@ -521,9 +524,10 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             case '99':
                 $tBandNome = 'OUTROS';
         }
+
         return $tBandNome;
     }//fim getCardName
-    
+
     protected function tipoPag($tPag)
     {
         switch ($tPag) {
@@ -557,9 +561,10 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             case '99':
                 $tPagNome = 'Outros';
         }
+
         return $tPagNome;
     }
-    
+
     protected function itens($det)
     {
         if (!isset($det)) {
@@ -597,6 +602,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $itensHtml .=  "</tr>\n";
         }
         $itensHtml .= "</table>\n";
+
         return $itensHtml;
     }//fim itens
 
@@ -628,7 +634,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $consCPF = $this->__simpleGetValue($dest, "CPF");
         $consCNPJ = $this->__simpleGetValue($dest, "CNPJ");
         $consDoc = $consCPF.$consCNPJ.$considEstrangeiro; //documentos do consumidor
-        
+
         $consHtml = '';
         $consHtml .= "<table width='100%'>\n";
         $consHtml .= "<tr>\n<td>CONSUMIDOR</td>\n</tr>\n";
@@ -640,18 +646,19 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 htmlspecialchars($consMun." - ".$consUF." "."Fone/Fax: ".$consFone)."</td>\n";
         $consHtml .= "</tr>\n";
         $consHtml .= "</table>\n";
+
         return $consHtml;
     }//fim consumidor
 
     /**
-     * 
-     * @param type $nome
-     * @param type $destino
+     *
+     * @param  type $nome
+     * @param  type $destino
      * @return type
      */
     public function printDANFE($output = 'pdf', $nome = '', $destino = 'I')
     {
-        
+
         if ($output == 'pdf') {
             //montagem do pdf
             if (is_array($this->papel) && strtolower($this->papel[1])=='one-page') {
@@ -666,20 +673,21 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 unlink($this->imgQRCode);
             }
             $this->mpdf->Output($nome, $destino);
-            
+
         } else {
             echo $this->html;
             if (is_file($this->imgQRCode)) {
                 unlink($this->imgQRCode);
             }
         }
+
         return true;
     }//fim printDANFE
-    
+
     /**
      * str2Hex
      * Converte string para haxadecimal ASCII
-     * @param type $str
+     * @param  type   $str
      * @return string
      */
     protected static function str2Hex($str)
@@ -693,13 +701,14 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $hex .= sprintf("%02x", ord($str{$iCount}));
             $iCount++;
         } while ($iCount < strlen($str));
+
         return $hex;
     }//fim str2Hex
-    
+
     /**
      * hex2Str
      * Converte hexadecimal ASCII para string
-     * @param type $str
+     * @param  type $str
      * @return type
      */
     protected static function hex2Str($str)
@@ -713,6 +722,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $bin .= chr(hexdec($str{$iCount}.$str{($iCount + 1)}));
             $iCount += 2;
         } while ($iCount < strlen($str));
+
         return $bin;
     }//fim hex2Str
 
@@ -729,10 +739,10 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $Token = ''
     ) {
         $nVersao = '100'; //versão do QRCode
-        
+
         $dhHex = self::str2Hex($dhEmi);
         $digHex = self::str2Hex($digVal);
-        
+
         $seq = '';
         $seq .= 'chNFe=' . $chNFe;
         $seq .= '&nVersao=' . $nVersao;
@@ -758,7 +768,8 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $imgQrCode = new QRcode($seq, 'M');
         $filename = $chNFe.date('YmdHis').'.png';
         $imgQrCode->displayPNG(200, array(255,255,255), array(0,0,0), $filename, 0);
+
         return $filename;
-        
+
     }//fim makeQRCode
 }//fim Classe

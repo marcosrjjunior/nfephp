@@ -212,7 +212,7 @@ if (!class_exists('IdentifyNFePHP')) {
                     */
                     $data_vencimento = substr($linha_digitavel, 40, 4);
                     /*
-                    $fator_vencimento = 
+                    $fator_vencimento =
                         ((  mktime(0,0,0,$mes,$dia,$ano) -
                             mktime(0,0,0,"07","03","2000"))/86400)+1000;
                     */
@@ -225,6 +225,7 @@ if (!class_exists('IdentifyNFePHP')) {
                         $data_vencimento_ymd = '0000-00-00';
                     }
                     $valor = substr($linha_digitavel, 44, 10) / 100;
+
                     return array('codigo_barra' => $codigo_barra,
                         'linha_digitavel' => $linha_digitavel,
                         'banco' => substr($linha_digitavel, 0, 3),
@@ -277,6 +278,7 @@ if (!class_exists('IdentifyNFePHP')) {
                             '9' => 'Quantidade de moeda');
                         $segmento = substr($codigo_barra, 1, 1);
                         $tipo_valor = substr($codigo_barra, 2, 1);
+
                         return array('codigo_barra' => $codigo_barra,
                             'linha_digitavel' => $linha_digitavel,
                             'valor' => $valor,
@@ -289,6 +291,7 @@ if (!class_exists('IdentifyNFePHP')) {
                 }
                 ////////////////
             }
+
             return false;
         }
 
@@ -302,7 +305,7 @@ if (!class_exists('IdentifyNFePHP')) {
             $soma = 0;
             for ($i = strlen($numero) - 1; $i >= 0; $i--) {
                 #$tmp_peso=$peso.$tmp_peso;
-                $parcial = (double)(substr($numero, $i, 1));
+                $parcial = (double) (substr($numero, $i, 1));
                 $parcial = $parcial * $peso;
                 $peso++;
                 if ($peso == 10) {
@@ -316,6 +319,7 @@ if (!class_exists('IdentifyNFePHP')) {
             if ($sub_11 == 1 || $sub_11 == 0 || $sub_11 > 9) {
                 return (1);
             }
+
             return ($sub_11);
         }
 
@@ -352,6 +356,7 @@ if (!class_exists('IdentifyNFePHP')) {
             if ($resto == 0) {
                 $digito = 0;
             }
+
             return ($digito);
         }
 
@@ -378,6 +383,7 @@ if (!class_exists('IdentifyNFePHP')) {
             $p1 = substr($codigo, 5, 4);
             $p2 = substr($codigo, 9, 10);
             $campo5 = "$p1$p2";
+
             return "$campo1 $campo2 $campo3 $campo4 $campo5";
         }
 
@@ -409,8 +415,10 @@ if (!class_exists('IdentifyNFePHP')) {
                     // se alguem descobrir =) agradeço
                     ///
                 }
+
                 return ($tmp_query);
             }
+
             return (false);
         }
 
@@ -433,9 +441,11 @@ if (!class_exists('IdentifyNFePHP')) {
                         substr($chave_numeros, 43, 1)) {
                         return (false);
                     }
+
                     return (substr($chave_numeros, 20, 2));
                 }
             }
+
             return false;
         }
 
@@ -447,7 +457,7 @@ if (!class_exists('IdentifyNFePHP')) {
             $soma_ponderada = 0;
             while ($i >= 0) {
                 for ($m = 0; $m < count($multiplicadores) && $i >= 0; $m++) {
-                    $soma_ponderada += ((int)substr($chave43, $i, 1)) *
+                    $soma_ponderada += ((int) substr($chave43, $i, 1)) *
                                         $multiplicadores[$m];
                     $i--;
                 }
@@ -458,6 +468,7 @@ if (!class_exists('IdentifyNFePHP')) {
             } else {
                 $cDV = 11 - $resto;
             }
+
             return $cDV;
         } //fim calculadv
 
@@ -501,6 +512,7 @@ if (!class_exists('IdentifyNFePHP')) {
                 $tmp_nfeb2b = $dom2->importNode($NFeB2B, true);
                 #var_dump($tmp_nfeb2b);
                 $dom2->appendChild($tmp_nfeb2b);
+
                 return ($dom2);
             }
             // retorna parte da nfe
@@ -513,9 +525,9 @@ if (!class_exists('IdentifyNFePHP')) {
             $dom2->preserveWhiteSpace = false;
             $tmp_nfe = $dom2->importNode($nfeProc, true);
             $dom2->appendChild($tmp_nfe);
+
             return ($dom2);
         }
-
 
         /* identificação de arquivos */
         public function identifyFileTXT($parm)
@@ -550,6 +562,7 @@ if (!class_exists('IdentifyNFePHP')) {
                 }
                 unset($TMP_TXT);
             }
+
             return false;
         }
 
@@ -587,7 +600,6 @@ if (!class_exists('IdentifyNFePHP')) {
                 }
             }
 
-
             // Eventos NFE
             $procEventoNFe = $dom->getElementsByTagName("procEventoNFe")->item(0);
             if (!empty($procEventoNFe)) {
@@ -612,6 +624,7 @@ if (!class_exists('IdentifyNFePHP')) {
                 if ($mod == 65) {
                     return (array('tipo' => NFEPHP_TIPO_ARQUIVO_EVENTONFCE));
                 }
+
                 return (array('tipo' => NFEPHP_TIPO_ARQUIVO_EVENTONFE));
             }
             // Eventos CTE
@@ -620,7 +633,6 @@ if (!class_exists('IdentifyNFePHP')) {
             if (!empty($procEventoCTe)) {
                 return (array('tipo' => NFEPHP_TIPO_ARQUIVO_EVENTOCTE));
             }
-
 
             // CTe
             $protCTe = $dom->getElementsByTagName("protCTe")->item(0);
@@ -649,7 +661,6 @@ if (!class_exists('IdentifyNFePHP')) {
             $procCancCTe, $cancCTe,
             $infInut, $retInutCTe);
 
-
             // NFe
             $nfeProc = $dom->getElementsByTagName("nfeProc")->item(0);
             if (!empty($nfeProc)) {
@@ -665,6 +676,7 @@ if (!class_exists('IdentifyNFePHP')) {
                 if ($mod == 65) {
                     return (array('tipo' => NFEPHP_TIPO_ARQUIVO_NFCE));
                 }
+
                 return (array('tipo' => NFEPHP_TIPO_ARQUIVO_NFE));
             }
 
@@ -683,6 +695,7 @@ if (!class_exists('IdentifyNFePHP')) {
                 if ($mod == 65) {
                     return (array('tipo' => NFEPHP_TIPO_ARQUIVO_NFCE_SEM_PROTOCOLO)); // SERÁ QUE EXISTE?!
                 }
+
                 return (array('tipo' => NFEPHP_TIPO_ARQUIVO_NFE_SEM_PROTOCOLO));
             }
 
@@ -701,6 +714,7 @@ if (!class_exists('IdentifyNFePHP')) {
             $procCancNFe, $cancNFe,
             $infInut, $retInutNFe,
             $dom);
+
             return false;
         }
 
@@ -718,6 +732,7 @@ if (!class_exists('IdentifyNFePHP')) {
                 return false;
             }
             if (!is_string($parm) && !is_resource($parm)) { // pode ser uma imagem $gd
+
                 return false;
             }
             if (!@is_executable($this->path_zbarimg)) {
@@ -730,14 +745,15 @@ if (!class_exists('IdentifyNFePHP')) {
                 }
                 // parm é o conteudo do arquivo e não o local do arquivo
                 if (strlen($parm) < 256) { // pelomenos 256 bytes.. (verificar o menor possivel para uma imagem util)
+
                     return false;
                 }
             } elseif (is_resource($parm)) {
                 if (get_resource_type($parm) != 'gd') { // tem q ser gd
+
                     return false;
                 }
             }
-
 
             $path = $this->path_tmp;
             if (!is_dir($path)) {
@@ -797,6 +813,7 @@ if (!class_exists('IdentifyNFePHP')) {
                             unlink($filename);
                         }
                     }
+
                     return ($ret);
                 }
                 // grava em um arquivo tmp
@@ -888,6 +905,7 @@ if (!class_exists('IdentifyNFePHP')) {
                 return ($ret[0]);
             }
             $ret['tipo'] = NFEPHP_TIPO_ARQUIVO_ARRAY;
+
             return $ret;
         }
 
@@ -912,6 +930,7 @@ if (!class_exists('IdentifyNFePHP')) {
                     $tmp = $this->identifyFileXML($parm);
                     if ($tmp !== false) {
                         $tmp['mime'] = 'application/xml';
+
                         return ($tmp);
                     }
                 } elseif ($mime == 'text/plain') {
@@ -919,6 +938,7 @@ if (!class_exists('IdentifyNFePHP')) {
                     $tmp = $this->identifyFileTXT($parm);
                     if ($tmp !== false) {
                         $tmp['mime'] = 'text/plain';
+
                         return ($tmp);
                     }
                 }
@@ -929,6 +949,7 @@ if (!class_exists('IdentifyNFePHP')) {
             $tmp = $this->identifyFileTXT($parm);
             if ($tmp !== false) {
                 $tmp['mime'] = 'text/plain';
+
                 return ($tmp);
             }
 
@@ -936,6 +957,7 @@ if (!class_exists('IdentifyNFePHP')) {
             $tmp = $this->identifyFileXML($parm);
             if ($tmp !== false) {
                 $tmp['mime'] = 'application/xml';
+
                 return ($tmp);
             }
 
@@ -950,7 +972,6 @@ if (!class_exists('IdentifyNFePHP')) {
         }
     }
 }
-
 
 // teste
 #$v=new IdentifyNFePHP('/usr/local/bin/zbarimg','/usr/bin/convert','/tmp');

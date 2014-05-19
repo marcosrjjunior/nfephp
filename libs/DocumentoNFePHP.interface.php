@@ -29,15 +29,14 @@
  * @copyright   2009-2011 &copy; NFePHP
  * @link        http://www.nfephp.org/
  * @author      Marcos Diez <marcos at unitron dot com dot br>
- * 
+ *
  * Esta interface garante a semelhança entre a DanfeNFePHP e a DacteNFePHP
- * 
+ *
  */
- 
-interface DocumentoNFePHP {
+
+interface DocumentoNFePHP
+{
     public function monta($orientacao='',$papel='A4',$logoAlign='C');
     public function printDocument($nome='',$destino='I',$printer='');
     public function simpleConsistencyCheck();
 }
-
-?>

@@ -21,7 +21,7 @@
  * <http://www.fsfla.org/svnwiki/trad/GPLv3>
  * ou
  * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
- * 
+ *
  * Esta classe atende aos critérios estabelecidos no
  * Manual de Importação/Exportação TXT Notas Fiscais eletrônicas versão 2.0.0
  *
@@ -84,8 +84,8 @@ class UnConvertNFePHP
      * do manual de integração da NFe
      *
      * @name nfexml2txt
-     * @param mixed string ou array $arq Paths dos arquivos xmls
-     * @return mixed boolean ou string
+     * @param  mixed string ou array $arq Paths dos arquivos xmls
+     * @return mixed                 boolean ou string
      */
     public function nfexml2txt($arq)
     {
@@ -110,6 +110,7 @@ class UnConvertNFePHP
             if (!$dom->loadXML($xml)) {
                 $this->errMsg = 'O arquivo indicado como NFe não é um XML!';
                 $this->errStatus = true;
+
                 return false;
             }
             //é um xml => verificar se é uma NFe
@@ -117,6 +118,7 @@ class UnConvertNFePHP
             if (!isset($infNFe)) {
                 $this->errMsg = 'O arquivo indicado como NFe não é uma NFe!';
                 $this->errStatus = true;
+
                 return false;
             }
             // é uma NFe => transformar em txt
@@ -125,13 +127,14 @@ class UnConvertNFePHP
             $txt .= $this->cxtt($dom);
         } //fim foreach
         $txt = "NOTA FISCAL|" . $contNotas . "\r\n" . $txt;
+
         return $txt;
     } //fim nfexml2txt
 
     /**
      *cxtt
-     * 
-     * @param type $dom 
+     *
+     * @param type $dom
      */
     private function cxtt($dom)
     {
@@ -781,13 +784,14 @@ class UnConvertNFePHP
                 } //fim foreach
             } //fim deduc
         } //fim cana
+
         return $txt;
     } //fim cxtt
 
     /**
      * getItens
-     * 
-     * @param type $det
+     *
+     * @param  type $det
      * @return type
      */
     private function getItens($det)
@@ -1083,7 +1087,7 @@ class UnConvertNFePHP
                         |$pICMSST|$vICMSST|\r\n";
                     break;
                 case '20': //CST 20 COM REDUCAO DE BASE DE CALCULO
-                    // N04|Orig|CST|ModBC|PRedBC|VBC|PICMS|VICMS| 
+                    // N04|Orig|CST|ModBC|PRedBC|VBC|PICMS|VICMS|
                     $txt .= "N04|$orig|$CST|$modBC|$pRedBC|$vBC|$pICMS|$vICMS|\r\n";
                     break;
                 case '30': //CST 30 ISENTA OU NAO TRIBUTADO E COM COBRANCA DO ICMS POR ST
@@ -1417,6 +1421,7 @@ class UnConvertNFePHP
                 }
             } //fim COFINSST
         } //fim fopreach itens
+
         return $txt;
     }//fim getItens
 }

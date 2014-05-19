@@ -5,7 +5,7 @@
  * Este programa é um software livre: você pode redistribuir e/ou modificá-lo
  * sob os termos da Licença Pública Geral GNU (GPL)como é publicada pela Fundação
  * para o Software Livre, na versão 3 da licença, ou qualquer versão posterior
- * e/ou 
+ * e/ou
  * sob os termos da Licença Pública Geral Menor GNU (LGPL) como é publicada pela Fundação
  * para o Software Livre, na versão 3 da licença, ou qualquer versão posterior.
  *
@@ -15,10 +15,10 @@
  * ou de ADEQUAÇÃO PARA UM PROPÓSITO EM PARTICULAR,
  * veja a Licença Pública Geral GNU para mais detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Publica GNU e da 
+ * Você deve ter recebido uma cópia da Licença Publica GNU e da
  * Licença Pública Geral Menor GNU (LGPL) junto com este programa.
  * Caso contrário consulte <http://www.fsfla.org/svnwiki/trad/GPLv3> ou
- * <http://www.fsfla.org/svnwiki/trad/LGPLv3>. 
+ * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
  *
  * @package   NFePHP
  * @name      NFSeSEGinfesPDF
@@ -30,37 +30,33 @@
  *
  *        CONTRIBUIDORES (em ordem alfabetica):
  *            Roberto Leite Machado <linux dot rlm at gamil dot com>
- * 
+ *
  */
 
-require_once('FPDF/fpdf.php');
+require_once 'FPDF/fpdf.php';
 
-
-class NFSePHPGinfesPDF extends FPDF {
-    
-    
+class NFSePHPGinfesPDF extends FPDF
+{
     protected $arquivo_xml_origem;
     protected $gif_brasao_prefeitura;
     protected $gif_logo_empresa;
     protected $aParser;
-    
-    public function NFSePHPGinfesPDF($orientation='P', $unit='mm', $format='A4', $arquivo_xml_origem='', $gif_brasao_prefeitura = '', $gif_logo_empresa='', $aParser=false){
-        
+
+    public function NFSePHPGinfesPDF($orientation='P', $unit='mm', $format='A4', $arquivo_xml_origem='', $gif_brasao_prefeitura = '', $gif_logo_empresa='', $aParser=false)
+    {
         parent::__construct($orientation, $unit, $format);
-        
+
         $this->gif_brasao_prefeitura = $gif_brasao_prefeitura;
         $this->gif_logo_empresa      = $gif_logo_empresa;
-        $this->arquivo_xml_origem    = $arquivo_xml_origem;                
-        $this->aParser               = $aParser;                
+        $this->arquivo_xml_origem    = $arquivo_xml_origem;
+        $this->aParser               = $aParser;
     }//fim NFSePHPGinfesPDF
-    
-    
 
     /**
-     * 
+     *
      */
-    public function Header() {
-
+    public function Header()
+    {
         $xml =  file_get_contents($this->arquivo_xml_origem) ;
 
         $doc = new DOMDocument();
@@ -72,10 +68,9 @@ class NFSePHPGinfesPDF extends FPDF {
         $this->Line(0.5, 1, 20.5, 1);
         $this->Line(0.5, 1, 0.5, 10.9);
 
-
         // CABEÇALHO
         // LOGO
-        if (is_file($this->gif_brasao_prefeitura)){
+        if (is_file($this->gif_brasao_prefeitura)) {
             $this->Image($this->gif_brasao_prefeitura, 1.1, 1.2, 2);
         }
 
@@ -99,7 +94,7 @@ class NFSePHPGinfesPDF extends FPDF {
 
         $DataEmissao = str_replace("T", " ", $doc->getElementsByTagName("DataEmissao")->item(0)->nodeValue);
         //$DataEmissao = _date_format($DataEmissao, DATE_DATETIME);
-        
+
         //die($DataEmissao);
 
         $this->Cell(3.2, 0.6, $DataEmissao, 1, 0, "C", 0);
@@ -135,8 +130,8 @@ class NFSePHPGinfesPDF extends FPDF {
         $this->Cell(20, 0.7, "Dados do Prestador de Serviços", 1, 1, "C", 1);
 
         // LOGO
-        
-        if (is_file($this->gif_logo_empresa)){
+
+        if (is_file($this->gif_logo_empresa)) {
             $this->Image($this->gif_logo_empresa, 0.7, 5.2, 2.8);
         }
 
@@ -181,7 +176,7 @@ class NFSePHPGinfesPDF extends FPDF {
         $this->Cell(5.1, 0.5, $this->aParser['EmailPrestador'], 1, 1);
         // FIM DADOS PRESTADOR
         // FIM PRESTADOR
-        
+
         // INICIO TOMADOR
         $this->SetFillColor(150, 150, 150);
         $this->SetXY(0.5, 7.5);
@@ -241,18 +236,18 @@ class NFSePHPGinfesPDF extends FPDF {
         $this->Cell(20, 0.7, "Discriminação dos Serviços", 1, 1, "C", 1);
     }
 
-
     /**
-     * 
+     *
      * @param type $arquivo_pdf_destino
      */
-    public function printNFSe($arquivo_pdf_destino='') {
+    public function printNFSe($arquivo_pdf_destino='')
+    {
         $xml = file_get_contents($this->arquivo_xml_origem);
         $doc = new DOMDocument();
         $doc->formatOutput = FALSE;
         $doc->preserveWhiteSpace = FALSE;
         $doc->loadXML($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-        $numNfse = $doc->getElementsByTagName("NumeroLote")->item(0)->nodeValue;        
+        $numNfse = $doc->getElementsByTagName("NumeroLote")->item(0)->nodeValue;
         // Instanciation of inherited class
         $this->AliasNbPages();
         $this->SetAutoPageBreak(1, 1);
@@ -318,7 +313,7 @@ class NFSePHPGinfesPDF extends FPDF {
         $this->setX(0.5);
         $this->Cell(20, 0.6, $doc->getElementsByTagName("ItemListaServico")->item(0)->nodeValue . " / " . $doc->getElementsByTagName("CodigoTributacaoMunicipio")->item(0)->nodeValue . " - " . $doc->aParser['ServicoPrestado'], 1, 1, 'C', 0);
         // FIM CODIGO DO SERVIÇO
-         
+
         // OBRAS
         $this->SetFont('Arial', '', 12);
         $this->SetFillColor(150, 150, 150);
@@ -332,7 +327,7 @@ class NFSePHPGinfesPDF extends FPDF {
         $this->Cell(5, 0.6, 'Código ART', 1, 0, 'C', 1);
         $this->Cell(5, 0.6, $doc->getElementsByTagName("Art")->item(0)->nodeValue, 1, 1, 'C', 0);
         // FIM OBRAS
-        
+
         // TRIBUTOS FEDERAIS
         $this->SetFont('Arial', '', 12);
         $this->SetFillColor(150, 150, 150);
@@ -352,7 +347,7 @@ class NFSePHPGinfesPDF extends FPDF {
         $this->Cell(2, 0.6, 'CSLL (R$)', 1, 0, 'C', 1);
         $this->Cell(2, 0.6, number_format($doc->getElementsByTagName("ValorCsll")->item(0)->nodeValue, 2, ",", "."), 1, 1, 'C', 0);
         // FIM TRIBUTOS FEDERAIS
-        
+
         // DETALHAMENTOS, RETENÇÕES E CALCULOS ISSQN
         $this->SetFont('Arial', 'B', 8);
         $this->SetFillColor(150, 150, 150);
@@ -430,7 +425,7 @@ class NFSePHPGinfesPDF extends FPDF {
     } //fim printNFSe
 
     /**
-     * 
+     *
      * @param type $w
      * @param type $h
      * @param type $txt
@@ -438,12 +433,13 @@ class NFSePHPGinfesPDF extends FPDF {
      * @param type $align
      * @param type $fill
      */
-    public function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false){
+    public function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false)
+    {
         parent::MultiCell($w, $h, utf8_decode($txt), $border, $align, $fill);
     }
-    
+
     /**
-     * 
+     *
      * @param type $w
      * @param type $h
      * @param type $txt
@@ -453,18 +449,19 @@ class NFSePHPGinfesPDF extends FPDF {
      * @param type $fill
      * @param type $link
      */
-    public function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link=''){
+    public function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='')
+    {
          parent::Cell($w, $h, utf8_decode($txt), $border, $ln, $align, $fill, $link);
-    }    
+    }
 
-    
     /**
-     * 
+     *
      * @param type $angle
      * @param type $x
      * @param type $y
      */
-    protected function Rotate($angle, $x = -1, $y = -1) {
+    protected function Rotate($angle, $x = -1, $y = -1)
+    {
         if ($x == -1) {
             $x = $this->x;
         }
@@ -483,9 +480,6 @@ class NFSePHPGinfesPDF extends FPDF {
             $cy = ($this->h - $y) * $this->k;
             $this->_out(sprintf('q %.5F %.5F %.5F %.5F %.2F %.2F cm 1 0 0 1 %.2F %.2F cm', $c, $s, -$s, $c, $cx, $cy, -$cx, -$cy));
         }
-    } //fim função rotate	
-    
-    
-    
+    } //fim função rotate
+
 }//fim NFSePHPGinfesPDF
-?>

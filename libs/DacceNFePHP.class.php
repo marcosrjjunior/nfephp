@@ -45,12 +45,12 @@ if (!defined('FPDF_FONTPATH')) {
     define('FPDF_FONTPATH','font/');
 }
 //classe extendida da classe FPDF para montagem do arquivo pdf
-require_once('PdfNFePHP.class.php');
+require_once 'PdfNFePHP.class.php';
 //classe com as funções communs entre DANFE e DACTE
-require_once('CommonNFePHP.class.php');
+require_once 'CommonNFePHP.class.php';
 
-class DacceNFePHP extends CommonNFePHP {
-
+class DacceNFePHP extends CommonNFePHP
+{
     //publicas
     public $logoAlign='C'; //alinhamento do logo
     public $yDados=0;
@@ -94,7 +94,6 @@ class DacceNFePHP extends CommonNFePHP {
     private $retEvento;
     private $rinfEvento;
 
-
    /**
     *__construct
     * @package NFePHP
@@ -110,18 +109,19 @@ class DacceNFePHP extends CommonNFePHP {
     * @param string $fonteDANFE Nome da fonte alternativa do DAnfe
     * @param number $mododebug 0-Não 1-Sim e 2-nada (2 default)
     */
-    function __construct($xmlfile='', $sOrientacao='',$sPapel='',$sPathLogo='', $sDestino='I', $aEnd='',$sDirPDF='',$fontePDF='',$mododebug=2) {
-        if(is_numeric($mododebug)){
+    public function __construct($xmlfile='', $sOrientacao='',$sPapel='',$sPathLogo='', $sDestino='I', $aEnd='',$sDirPDF='',$fontePDF='',$mododebug=2)
+    {
+        if (is_numeric($mododebug)) {
             $this->debugMode = $mododebug;
         }
-        if($this->debugMode){
+        if ($this->debugMode) {
             //ativar modo debug
             error_reporting(E_ALL);ini_set('display_errors', 'On');
         } else {
             //desativar modo debug
             error_reporting(0);ini_set('display_errors', 'Off');
         }
-        if (is_array($aEnd)){
+        if (is_array($aEnd)) {
             $this->aEnd = $aEnd;
         }
         $this->orientacao   = $sOrientacao;
@@ -138,12 +138,12 @@ class DacceNFePHP extends CommonNFePHP {
             $this->fontePadrao = $fontePDF;
         }
         //se for passado o xml
-        if (empty($xmlfile)){
+        if (empty($xmlfile)) {
             $this->errMsg = 'Um caminho para o arquivo xml da CCe deve ser passado!';
             $this->errStatus = true;
             exit();
         }
-        if ( !is_file($xmlfile) ){
+        if ( !is_file($xmlfile) ) {
             $this->errMsg = 'Um caminho para o arquivo xml da CCe deve ser passado!';
             $this->errStatus = true;
             exit();
@@ -157,7 +157,7 @@ class DacceNFePHP extends CommonNFePHP {
         $this->retEvento        = $this->dom->getElementsByTagName("retEvento")->item(0);
         $this->rinfEvento       = $this->retEvento->getElementsByTagName("infEvento")->item(0);
         $tpEvento = $this->infEvento->getElementsByTagName("tpEvento")->item(0)->nodeValue;
-        if($tpEvento != '110110'){
+        if ($tpEvento != '110110') {
             $this->errMsg = 'Uma CCe deve ser passada !!';
             $this->errStatus = true;
             exit();
@@ -180,9 +180,10 @@ class DacceNFePHP extends CommonNFePHP {
     /**
      *
      */
-    private function __buildCCe(){
+    private function __buildCCe()
+    {
         $this->pdf = new PdfNFePHP($this->orientacao, 'mm', $this->papel);
-        if( $this->orientacao == 'P' ){
+        if ($this->orientacao == 'P') {
             // margens do PDF
             $margSup = 2;
             $margEsq = 2;
@@ -190,7 +191,7 @@ class DacceNFePHP extends CommonNFePHP {
             // posição inicial do relatorio
             $xInic = 1;
             $yInic = 1;
-            if($this->papel =='A4'){ //A4 210x297mm
+            if ($this->papel =='A4') { //A4 210x297mm
                 $maxW = 210;
                 $maxH = 297;
             }
@@ -202,7 +203,7 @@ class DacceNFePHP extends CommonNFePHP {
             // posição inicial do relatorio
             $xInic = 5;
             $yInic = 5;
-            if($papel =='A4'){ //A4 210x297mm
+            if ($papel =='A4') { //A4 210x297mm
                 $maxH = 210;
                 $maxW = 297;
             }
@@ -235,17 +236,17 @@ class DacceNFePHP extends CommonNFePHP {
         //coloca os dados da CCe
         $y = $this->__footerCCe($x,$y+$this->hPrint-20);
 
-
     } //fim __buildCCe
 
     /**
      *
-     * @param type $x
-     * @param type $y
-     * @param type $pag
+     * @param  type $x
+     * @param  type $y
+     * @param  type $pag
      * @return type
      */
-    private function __headerCCe($x,$y,$pag){
+    private function __headerCCe($x,$y,$pag)
+    {
         $oldX = $x;
         $oldY = $y;
         $maxW = $this->wPrint;
@@ -253,9 +254,9 @@ class DacceNFePHP extends CommonNFePHP {
         //####################################################################################
         //coluna esquerda identificação do emitente
         $w = round($maxW*0.41,0);// 80;
-        if( $this->orientacao == 'P' ){
+        if ($this->orientacao == 'P') {
             $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'I');
-        }else{
+        } else {
             $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         }
         $w1 = $w;
@@ -264,13 +265,13 @@ class DacceNFePHP extends CommonNFePHP {
         $this->__textBox($x,$y,$w,$h);
         $texto = 'IDENTIFICAÇÃO DO EMITENTE';
         $this->__textBox($x,$y,$w,5,$texto,$aFont,'T','C',0,'');
-        if (is_file($this->logomarca)){
+        if (is_file($this->logomarca)) {
             $logoInfo = getimagesize($this->logomarca);
             //largura da imagem em mm
             $logoWmm = ($logoInfo[0]/72)*25.4;
             //altura da imagem em mm
             $logoHmm = ($logoInfo[1]/72)*25.4;
-            if ($this->logoAlign=='L'){
+            if ($this->logoAlign=='L') {
                 $nImgW = round($w/3,0);
                 $nImgH = round($logoHmm * ($nImgW/$logoWmm),0);
                 $xImg = $x+1;
@@ -280,7 +281,7 @@ class DacceNFePHP extends CommonNFePHP {
                 $y1 = round($h/3+$y,0);
                 $tw = round(2*$w/3,0);
             }
-            if ($this->logoAlign=='C'){
+            if ($this->logoAlign=='C') {
                 $nImgH = round($h/3,0);
                 $nImgW = round($logoWmm * ($nImgH/$logoHmm),0);
                 $xImg = round(($w-$nImgW)/2+$x,0);
@@ -289,7 +290,7 @@ class DacceNFePHP extends CommonNFePHP {
                 $y1 = round($yImg + $nImgH + 1,0);
                 $tw = $w;
             }
-            if($this->logoAlign=='R'){
+            if ($this->logoAlign=='R') {
                 $nImgW = round($w/3,0);
                 $nImgH = round($logoHmm * ($nImgW/$logoWmm),0);
                 $xImg = round($x+($w-(1+$nImgW)),0);
@@ -324,14 +325,14 @@ class DacceNFePHP extends CommonNFePHP {
         $fone = $this->aEnd['telefone'];
         $email = $this->aEnd['email'];
         $foneLen = strlen($fone);
-        if ($foneLen > 0 ){
+        if ($foneLen > 0) {
             $fone2 = substr($fone,0,$foneLen-4);
             $fone1 = substr($fone,0,$foneLen-8);
             $fone = '(' . $fone1 . ') ' . substr($fone2,-4) . '-' . substr($fone,-4);
         } else {
             $fone = '';
         }
-        if ($email != ''){
+        if ($email != '') {
             $email = 'Email: '.$email;
         }
         $texto = $lgr . ", " . $nro . $cpl . "\n" . $bairro . " - " . $CEP . "\n" . $mun . " - " . $UF . " " . $fone . "\n" . $email;
@@ -376,10 +377,10 @@ class DacceNFePHP extends CommonNFePHP {
         //############################################
         $x = $oldX;
         $y = $y1;
-        if ($this->CNPJDest != ''){
+        if ($this->CNPJDest != '') {
             $texto = 'CNPJ do Destinatário: '.$this->__format($this->CNPJDest,"##.###.###/####-##");
         }
-        if ($this->CPFDest != ''){
+        if ($this->CPFDest != '') {
             $texto = 'CPF do Destinatário: '.$this->__format($this->CPFDest,"###.###.###-##");
         }
         $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'B');
@@ -418,9 +419,10 @@ class DacceNFePHP extends CommonNFePHP {
     /**
      *
      * @param type $x
-     * @param int $y
+     * @param int  $y
      */
-    private function __bodyCCe($x,$y){
+    private function __bodyCCe($x,$y)
+    {
         $maxW = $this->wPrint;
         $texto = 'CORREÇÕES A SEREM CONSIDERADAS';
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'B');
@@ -432,16 +434,15 @@ class DacceNFePHP extends CommonNFePHP {
         $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'B');
         $this->__textBox($x+2,$y+2,$maxW-2,150,$texto,$aFont,'T','L',0,'',false);
 
-
     }//fim __bodyCCe
-
 
     /**
      *
      * @param type $x
      * @param type $y
      */
-    private function __footerCCe($x,$y){
+    private function __footerCCe($x,$y)
+    {
         $w = $this->wPrint;
         $texto = "Este documento é uma representação gráfica da CCe e foi impresso apenas para sua informação e não possue validade fiscal.\n A CCe deve ser recebida e mantida em arquivo eletrônico XML e pode ser consultada através dos Portais das SEFAZ.";
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'I');
@@ -460,37 +461,37 @@ class DacceNFePHP extends CommonNFePHP {
 
     /**
      *
-     * @param type $nome
-     * @param string $destino
-     * @param type $printer
+     * @param  type   $nome
+     * @param  string $destino
+     * @param  type   $printer
      * @return type
      */
-    public function printCCe($nome='',$destino='I',$printer=''){
+    public function printCCe($nome='',$destino='I',$printer='')
+    {
         //monta
         $command = '';
-        if ($nome == ''){
+        if ($nome == '') {
             $file = $this->pdfDir.'cce.pdf';
         } else {
             $file = $this->pdfDir.$nome;
         }
-        if (($destino != 'I' || $destino != 'S') && $destino != 'F'){
+        if (($destino != 'I' || $destino != 'S') && $destino != 'F') {
             $destino = 'I';
         }
-        if ($printer != ''){
+        if ($printer != '') {
             $command = "-P $printer";
         }
         $this->__buildCCe();
         $arq = $this->pdf->Output($file,$destino);
 
-        if ( $destino == 'S' ){
+        if ($destino == 'S') {
             //aqui pode entrar a rotina de impressão direta
             $command = "lpr $command $file";
             system($comando,$retorno);
         }
+
         return $arq;
 
     }//fim printCCe
 
 } //fim CCeNFePHP
-
-?>

@@ -5,7 +5,7 @@
  * Este programa é um software livre: você pode redistribuir e/ou modificá-lo
  * sob os termos da Licença Pública Geral GNU (GPL)como é publicada pela Fundação
  * para o Software Livre, na versão 3 da licença, ou qualquer versão posterior
- * e/ou 
+ * e/ou
  * sob os termos da Licença Pública Geral Menor GNU (LGPL) como é publicada pela Fundação
  * para o Software Livre, na versão 3 da licença, ou qualquer versão posterior.
  *
@@ -15,10 +15,10 @@
  * ou de ADEQUAÇÃO PARA UM PROPÓSITO EM PARTICULAR,
  * veja a Licença Pública Geral GNU para mais detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Publica GNU e da 
+ * Você deve ter recebido uma cópia da Licença Publica GNU e da
  * Licença Pública Geral Menor GNU (LGPL) junto com este programa.
  * Caso contrário consulte <http://www.fsfla.org/svnwiki/trad/GPLv3> ou
- * <http://www.fsfla.org/svnwiki/trad/LGPLv3>. 
+ * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
  *
  *
  * @package   NFePHP
@@ -31,16 +31,16 @@
  *
  *        CONTRIBUIDORES (em ordem alfabetica):
  *              Roberto Leite Machado <linux dot rlm at gamil dot com>
- * 
- * 
+ *
+ *
  * TODO: Este arquivo está incompleto e deve ser completamente revisado foi postado apenas para permitir as contribuições de todos os interessados
- * O conteúdo foi apenas copiado do email do seu autor datado de 14/02/2012. 
- * 
+ * O conteúdo foi apenas copiado do email do seu autor datado de 14/02/2012.
+ *
  * ##### NÃO PRONTO PARA PRODUÇÃO #####
  */
 
-class NFSe {
-
+class NFSe
+{
     public $idRPS='';
     public $idLoteRPS='';
     public $numeroLote='';
@@ -75,19 +75,18 @@ class NFSe {
     public $errStatus=false;
     public $priKey='';
     public $pubKey='';
-    
-    
-    
-    function __construct(){
-        
+
+    public function __construct()
+    {
     }
-    
+
     //Conteudo do array aItens
     //valor,valorDeducoes,valorPis,valorCofins,valorIr,valorCsll,issRetido,valorIss,valorIssRetido,
     //outrasRetencoes,baseCalculo,aliquota,valorLiquidoNfse,descontoIncondicionado,descontoCondicionado,
     //itemListaServico,codigoCnae,discriminacao
-    
-    public function buildNFSe() {
+
+    public function buildNFSe()
+    {
         $idRps="rps1";
         $idLote="lote1";
         //cria o objeto DOM para o xml
@@ -111,7 +110,7 @@ class NFSe {
         $infRps->appendChild($dom->createElement("OptanteSimplesNacional",$this->optanteSimplesNacional));
         $infRps->appendChild($dom->createElement("IncentivadorCultural",$this->incentivadorCultural));
         $infRps->appendChild($dom->createElement("Status",$this->status));
-        //cria as variáveis zeradas    
+        //cria as variáveis zeradas
         $qtd=$v_total=$total_itens=$t_icms=$t_ipi=$total_pb=$total_pl=0;
         $temIcms=false;
         foreach ($this->aItens as $item) {
@@ -164,11 +163,11 @@ class NFSe {
         $CpfCnpj=$dom->createElement("CpfCnpj");
         $TomadorCpf=$dom->createElement("Cpf",$this->tomaCPF);
         $TomadorCnpj=$dom->createElement("Cnpj",$this->tomaCNPJ);
-        if ($this->tomaCPF != ''){
+        if ($this->tomaCPF != '') {
             $CpfCnpj->appendChild($TomadorCpf);
         } else {
             $CpfCnpj->appendChild($TomadorCnpj);
-        }    
+        }
         $IdentificacaoTomador->appendChild($CpfCnpj);
         $RazaoSocial=$dom->createElement("RazaoSocial",$this->tomaRazaoSocial);
         $EEndereco=$dom->createElement("Endereco");
@@ -229,10 +228,11 @@ class NFSe {
         $this->signNFSe("InfRps");
         $this->signNFSe("LoteRps");
         $this->nfsexml=str_replace('<?xml version="1.0"?>','',$this->nfsexml);
-    } // fim 
+    } // fim
 
     //Gera arquivo TXT para importação da SEFAZ
-    public function geraTxtNFSE() {
+    public function geraTxtNFSE()
+    {
         $hoje=date("Ymd");
         $dataHora=date("YmdHis");
         // REGISTRO 1 - Header do arquivo
@@ -308,25 +308,26 @@ class NFSe {
             $s.=padrl($item['unidade'], 20, "l"); // Unidade
             $s.=padrl(number_format($item['quantidade'],2,"",""),8,"l","0"); // Quantidade
             $s.=padrl($item['discriminacao'], 255, "r"," "); // Descrição do serviço
-            $s.=padrl(" ",20,"l"); // Alvará               
+            $s.=padrl(" ",20,"l"); // Alvará
             $s.=padrl(" ", 9, "l"); // Preencher com 9 espações em branco
             $s.=padrl($this->numeroLote, 8, "l","0"); // Sequencial do registro
             $s.=NL;
         }
-        
+
         // REGISTRO 6 - Indicador de final de arquivo
         $s.="6"; // Tipo de registro
         $s.=padrl(" ", 390, "l"); // Preencher com 390 espações em branco
         $s.=padrl($this->numeroLote, 8, "l","0"); // Sequencial do registro
         $s.=NL;
-        
+
         //$sql="update nfse set txt='$s' where id=".$this->nfeid;
         //gQuery($sql);
-               
+
         $this->arqtxt=$s;
     } //fim
 
-    public function envelopa() {
+    public function envelopa()
+    {
         // Envelopa
         $idLote="1";
         // cria DOM pro nfexml
@@ -353,14 +354,16 @@ class NFSe {
         $this->nfsexml=str_replace('<?xml version="1.0"?>','',$this->nfsexml);
         $this->nfsexml='<?xml version="1.0" encoding="UTF-8"?><EnviarLoteRpsEnvio xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd">'.$this->nfsexml.'</EnviarLoteRpsEnvio>';
 
-    } //fim 
-               
-    public function limpaNumero($num){
+    } //fim
+
+    public function limpaNumero($num)
+    {
         return(str_replace(".00","",floatval($num)));
     }
 
     // Assina XML
-    public function signNFSe($tag='infNFe') {
+    public function signNFSe($tag='infNFe')
+    {
         global $http_lib;
         $sai=false;
         $nfefile=$this->nfsexml;
@@ -377,13 +380,14 @@ class NFSe {
                     }
                 } else {
                     $this->erros[]=M."Houve uma falha ao assinar a NFe.";
-                } 
+                }
             } else {
                 $this->erros[]=M.$this->errMsg." (".$this->cert.")";
             }
         } else {
             $this->nfexml=$this->signNFSe($nfefile, $tag);
         }
+
         return($sai);
     } //fim signNFSe
 
@@ -394,19 +398,22 @@ class NFSe {
      * os arquivos XML
      *
      * @name signXML
-     * @param	string $docxml String contendo o arquivo XML a ser assinado
-     * @param   string $tagid TAG do XML que devera ser assinada
-     * @return	mixed false se houve erro ou string com o XML assinado
+     * @param  string $docxml String contendo o arquivo XML a ser assinado
+     * @param  string $tagid  TAG do XML que devera ser assinada
+     * @return mixed  false se houve erro ou string com o XML assinado
      */
-    public function signXML($docxml, $tagid=''){
-            if ( $tagid == '' ){
+    public function signXML($docxml, $tagid='')
+    {
+            if ($tagid == '') {
                 $this->errMsg = "Uma tag deve ser indicada para que seja assinada!!\n";
                 $this->errStatus = true;
+
                 return false;
             }
-            if ( $docxml == '' ){
+            if ($docxml == '') {
                 $this->errMsg = "Um xml deve ser passado para que seja assinado!!\n";
                 $this->errStatus = true;
+
                 return false;
             }
             // obter o chave privada para a ssinatura
@@ -501,33 +508,34 @@ class NFSe {
             return $docxml;
     } //fim signXML
 
-
     // Valida XML assinado
-    function valida($tipo="nfe") {
+    public function valida($tipo="nfe")
+    {
         global $gPathLib,$gPathDefault;
-        if ($gPathLib<>""){
+        if ($gPathLib<>"") {
             $arq=$gPathLib.NFEPHP."/schemes/";
         } else {
             $arq=$gPathDefault.NFEPHP."/schemes/";
         }
 
-        if ($tipo=="nfe"){
+        if ($tipo=="nfe") {
             $xsd=$arq.$this->schemes.'/nfe_v2.00.xsd';
         } else {
             $xsd=$arq.'/NFSE_SSA/nfse.xsd';
-        }    
+        }
         $sai=$this->nfeTools->validXML($this->nfexml, $xsd);
         if ($sai['error']<>'') {
             $e=explode(";",$sai['error']);
             foreach ($e as $el)
                 $this->erros[]=trim($el);
         }
+
         return($sai);
     } //fim valida
 
-
     // Enviar para Sefaz
-    function envia($xml="",$numero="") {
+    public function envia($xml="",$numero="")
+    {
         $sai=true;
         //$sql="select * from nfe_numeros where id_armazens=0"; // numero do lote
         //$rs=gQuery($sql);
@@ -540,7 +548,7 @@ class NFSe {
         //}
         //$sql="update nfe_numeros set numero=$numeroLote where id_armazens=0";
         //gQuery($sql);
-        //if ($xml==""){
+        //if ($xml=="") {
         //    $xml=$this->nfexml;
         //}
         if ($ret = $this->sendLot(array($xml),$numeroLote)) {
@@ -552,11 +560,12 @@ class NFSe {
                 $sai=false;
             }
         }
+
         return($sai);
     } //fim envia
 
-    
-    public function enviaNFSe($xml="",$numero="") {
+    public function enviaNFSe($xml="",$numero="")
+    {
         $sai=true;
         if (!is_object($this->nfeTools)) {
             $this->nfeTools= new gNFeTools($this->config());
@@ -590,16 +599,19 @@ class NFSe {
               $this->erros[]=str_pad('E000',10,' ')." Nao foi possivel enviar para a SEFAZ, provavelmente por problema no certificado.";
               $sai=false;
         }
+
         return($sai);
     } //fim enviaNFSe
 
-    public function consultaRps($protocolo) {
+    public function consultaRps($protocolo)
+    {
         $sai=$this->__consultRps($this->CNPJ,$this->IM,trim($protocolo));
+
         return $sai;
     } //fim consultaRps
 
-
-    public function consultaSituacaoRps($protocolo) {
+    public function consultaSituacaoRps($protocolo)
+    {
         $sai=$this->__consultSitRps($this->CNPJ,$this->IM,trim($protocolo));
         //Código de situação de lote de RPS
         //1 – Não Recebido
@@ -607,20 +619,22 @@ class NFSe {
         //3 – Processado com Erro
         //4 – Processado com Sucesso
         $situacao = FALSE;
-        if ($sai){
+        if ($sai) {
             $situacao = $sai['Situacao'];
         }
+
         return($situacao);
     } //fim consultaSituacaoRps
 
     /**
      * sendRps
-     * Envia lote de Notas Fiscais de Serviço 
+     * Envia lote de Notas Fiscais de Serviço
      *
      * @name sendRps
      * @package NFePHP
     **/
-    public function sendRps($aNFSe,$idLote) {
+    public function sendRps($aNFSe,$idLote)
+    {
         //identificação do serviço
         $servico = 'EnvioLoteRPS';
         //recuperação da versão
@@ -644,10 +658,11 @@ class NFSe {
             $retorno=str_replace('&gt;','>',$retorno);
             $retorno=str_replace('<?xml version="1.0" encoding="utf-8"?>','',$retorno);
             $xmlresp = utf8_encode($retorno);
-            if ($xmlresp == ''){
+            if ($xmlresp == '') {
                 //houve uma falha na comunicação SOAP
                 $this->errStatus = true;
                 $this->errMsg = 'Houve uma falha na comunicação SOAP!!';
+
                 return FALSE;
             }
             //tratar dados de retorno
@@ -665,18 +680,20 @@ class NFSe {
          } else {
             $this->errStatus = true;
             $this->errMsg = 'Nao houve retorno do SOAP!';
+
             return FALSE;
         }
+
         return $aRet;
     }// fim sendLot
-
 
     /**
      * Consulta NFSe enviada po Lote
      *
      * @package NFePHP
     **/
-    private function __consultRps($cnpj,$inscricaoMunicipal,$protocolo){
+    private function __consultRps($cnpj,$inscricaoMunicipal,$protocolo)
+    {
         // carga das variaveis da funçao do webservice envio de Ne em lote
         //identificação do serviço
         $servico = 'ConsultaLoteRPS';
@@ -700,10 +717,11 @@ class NFSe {
             $retorno=str_replace('&gt;','>',$retorno);
             $retorno=str_replace('<?xml version="1.0" encoding="utf-8"?>','',$retorno);
             $xmlresp = utf8_encode($retorno);
-            if ($xmlresp == ''){
+            if ($xmlresp == '') {
                 //houve uma falha na comunicação SOAP
                 $this->errStatus = TRUE;
                 $this->errMsg = 'Houve uma falha na comunicação SOAP!!';
+
                 return FALSE;
             }
             //tratar dados de retorno
@@ -718,19 +736,21 @@ class NFSe {
          } else {
             $this->errStatus = TRUE;
             $this->errMsg .= 'Nao houve retorno do SOAP!';
+
             return FALSE;
         }
+
         return $aRet;
     } //fim consultRps
-
 
     /**
      * Consulta NFS enviada po Lote
      *
-     * @name 
+     * @name
      * @package NFePHP
     **/
-    private function __consultSitRps($cnpj,$inscricaoMunicipal,$protocolo){
+    private function __consultSitRps($cnpj,$inscricaoMunicipal,$protocolo)
+    {
         // carga das variaveis da funçao do webservice envio de Ne em lote
         //identificação do serviço
         $servico = 'ConsultaSituacaoLoteRPS';
@@ -756,10 +776,11 @@ class NFSe {
             $retorno=str_replace('&gt;','>',$retorno);
             $retorno=str_replace('<?xml version="1.0" encoding="utf-8"?>','',$retorno);
             $xmlresp = utf8_encode($retorno);
-            if ($xmlresp == ''){
+            if ($xmlresp == '') {
                 //houve uma falha na comunicação SOAP
                 $this->errStatus = TRUE;
                 $this->errMsg = 'Houve uma falha na comunicação SOAP!!';
+
                 return FALSE;
             }
             //tratar dados de retorno
@@ -773,20 +794,21 @@ class NFSe {
          } else {
             $this->errStatus = TRUE;
             $this->errMsg .= 'Nao houve retorno do SOAP!';
+
             return FALSE;
         }
+
         return $aRet;
     } //fim consultSitRps
 
-
-     protected function __sendCURLNFSe($urlsefaz,$namespace,$cabecalho,$dados,$metodo,$ambiente='',$UF=''){
-
-        if ($urlsefaz == ''){
+     protected function __sendCURLNFSe($urlsefaz,$namespace,$cabecalho,$dados,$metodo,$ambiente='',$UF='')
+     {
+        if ($urlsefaz == '') {
             //não houve retorno
             $this->errMsg = "URL do webservice não disponível.\n";
             $this->errStatus = true;
         }
-        if ($ambiente == ''){
+        if ($ambiente == '') {
             $ambiente = $this->tpAmb;
         }
         $data = '';
@@ -849,9 +871,9 @@ class NFSe {
         $cCode['504']="Gateway Timeout";
         $cCode['505']="HTTP Version Not Supported";
         $tamanho = strlen($data);
-        if($this->enableSCAN){
+        if ($this->enableSCAN) {
             //monta a terminação do URL
-            switch ($metodo){
+            switch ($metodo) {
                 case 'nfeRecepcaoLote2':
                     $servico = "NfeRecepcao";
                     break;
@@ -876,15 +898,15 @@ class NFSe {
             }
             $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "def_ws2.xml",$ambiente,'SCAN');
             $urlsefaz = $aURL[$servico]['URL'];
-        } 
+        }
         $parametros = Array('Content-Type: application/soap+xml;charset=utf-8;action="'.$namespace."/".$metodo.'"','SOAPAction: "'.$metodo.'"',"Content-length: $tamanho");
         $_aspa = '"';
         $oCurl = curl_init();
-        if(is_array($this->aProxy)){
+        if (is_array($this->aProxy)) {
             curl_setopt($oCurl, CURLOPT_HTTPPROXYTUNNEL, 1);
             curl_setopt($oCurl, CURLOPT_PROXYTYPE, "CURLPROXY_HTTP");
             curl_setopt($oCurl, CURLOPT_PROXY, $this->aProxy['IP'].':'.$this->aProxy['PORT']);
-            if( $this->aProxy['PASS'] != '' ){
+            if ($this->aProxy['PASS'] != '') {
                 curl_setopt($oCurl, CURLOPT_PROXYUSERPWD, $this->aProxy['USER'].':'.$this->aProxy['PASS']);
                 curl_setopt($oCurl, CURLOPT_PROXYAUTH, "CURLAUTH_BASIC");
             } //fim if senha proxy
@@ -930,7 +952,7 @@ class NFSe {
         $x = stripos($__xml, "<");
         $xml = substr($__xml, $x, $n-$x);
         $this->soapDebug = $data."\n\n".$txtInfo."\n".$__xml;
-        if ($__xml === false){
+        if ($__xml === false) {
             //não houve retorno
             $this->errMsg = curl_error($oCurl) . $info['http_code'] . $cCode[$info['http_code']]."\n";
             $this->errStatus = true;
@@ -940,10 +962,10 @@ class NFSe {
             $this->errStatus = false;
         }
         curl_close($oCurl);
-        return $xml;
-        
-    }
 
+        return $xml;
+
+    }
 
     /**
      * __sendSOAPNFSe
@@ -954,17 +976,18 @@ class NFSe {
      * @name __sendSOAPNFSe
      * @version 1.0
      * @package NFePHP
-     * @param string $urlsefaz
-     * @param string $namespace
-     * @param string $cabecalho
-     * @param string $dados
-     * @param string $metodo
-     * @param numeric $ambiente
-     * @return mixed False se houve falha ou o retorno em xml do SEFAZ
+     * @param  string  $urlsefaz
+     * @param  string  $namespace
+     * @param  string  $cabecalho
+     * @param  string  $dados
+     * @param  string  $metodo
+     * @param  numeric $ambiente
+     * @return mixed   False se houve falha ou o retorno em xml do SEFAZ
      */
-    private function __sendSOAPNFSe($urlwebservice,$cabecalho,$dados,$metodo,$ambiente){
+    private function __sendSOAPNFSe($urlwebservice,$cabecalho,$dados,$metodo,$ambiente)
+    {
         use_soap_error_handler(TRUE);
-        if($ambiente == 1){
+        if ($ambiente == 1) {
             $ambiente = 'producao';
             $URL = $urlwebservice.'?wsdl';
         } else {
@@ -986,31 +1009,34 @@ class NFSe {
             'cache_wsdl'    => WSDL_CACHE_NONE
         );
         //instancia a classe soap
-        try{
+        try {
             $oSoapClient = new NFSeSOAPClient($URL,$options);
         } catch (Exception $e) {
             $this->errStatus = TRUE;
             $this->errMsg = $e->__toString();
+
             return FALSE;
         }
         //faz a chamada ao metodo do webservices
-        try{
+        try {
             // não precisa enviar cabecalho...
             $varBody=$dados;
             $aBody = array("","loteXML"=>$varBody);
             $resp = $oSoapClient->__soapCall($metodo, $aBody);
             $resposta = $oSoapClient->__getLastResponse();
             $this->soapRequest=$oSoapClient->soapRequest;
-        } catch (Exception $e){
+        } catch (Exception $e) {
             $this->soapRequest=$oSoapClient->soapRequest;
             $this->errStatus = TRUE;
             $this->errMsg = $e->__toString();
+
             return FALSE;
         }
         $this->soapDebug = $oSoapClient->__getLastRequestHeaders();
         $this->soapDebug .= "\n" . $oSoapClient->__getLastRequest();
         $this->soapDebug .= "\n" . $oSoapClient->__getLastResponseHeaders();
         $this->soapDebug .= "\n" . $oSoapClient->__getLastResponse();
+
         return $resposta;
     } //fim __sendSOAPNFSe
 
@@ -1018,13 +1044,15 @@ class NFSe {
 
 /**
  * Classe complementar
- * necessária para a comunicação SOAP 
+ * necessária para a comunicação SOAP
  * Remove algumas tags para adequar a comunicação
  * ao padrão Ruindows utilizado
  */
-class NFSeSOAPClient extends SoapClient {
+class NFSeSOAPClient extends SoapClient
+{
     public $soapRequest;
-    public function __doRequest($request, $location, $action, $version) {
+    public function __doRequest($request, $location, $action, $version)
+    {
         $request = str_replace(':ns1', '', $request);
         $request = str_replace('ns1:', '', $request);
         $request = str_replace("\n", '', $request);
@@ -1042,8 +1070,7 @@ class NFSeSOAPClient extends SoapClient {
             $request=str_replace("</param1>","</loteXML></ConsultarSituacaoLoteRPS>",$request);
         }
         $this->soapRequest=$request;
+
         return (parent::__doRequest($request, $location, $action, $version));
     }
 } //fim da classe NFSeSOAPClient
-
-?>

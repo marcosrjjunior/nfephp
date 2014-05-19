@@ -5,7 +5,7 @@
  * Este programa é um software livre: você pode redistribuir e/ou modificá-lo
  * sob os termos da Licença Pública Geral GNU (GPL)como é publicada pela Fundação
  * para o Software Livre, na versão 3 da licença, ou qualquer versão posterior
- * e/ou 
+ * e/ou
  * sob os termos da Licença Pública Geral Menor GNU (LGPL) como é publicada pela Fundação
  * para o Software Livre, na versão 3 da licença, ou qualquer versão posterior.
  *
@@ -15,10 +15,10 @@
  * ou de ADEQUAÇÃO PARA UM PROPÓSITO EM PARTICULAR,
  * veja a Licença Pública Geral GNU para mais detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Publica GNU e da 
+ * Você deve ter recebido uma cópia da Licença Publica GNU e da
  * Licença Pública Geral Menor GNU (LGPL) junto com este programa.
  * Caso contrário consulte <http://www.fsfla.org/svnwiki/trad/GPLv3> ou
- * <http://www.fsfla.org/svnwiki/trad/LGPLv3>. 
+ * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
  *
  *
  * @package   NFePHP
@@ -31,11 +31,11 @@
  *
  *        CONTRIBUIDORES (em ordem alfabetica):
  *            Roberto Leite Machado <linux dot rlm at gamil dot com>
- * 
+ *
  */
 
-class NFSePHPGinfesData {
-
+class NFSePHPGinfesData
+{
     // número do rps (recibo provisório de serviços) que identificará a NFS-e.
     private $numrps = "";
     // série da nota fiscal
@@ -72,9 +72,9 @@ class NFSePHPGinfesData {
     private $cMun = '3525904';
 
     /**
-     * 
-     * @param array itens {valor, valorDeducoes, valorPis, valorCofins, valorIr, valorCsll, issRetido,valorIss,valorIssRetido,outrasRetencoes, baseCalculo,aliquota,valorLiquidoNfse,descontoIncondicionado,descontoCondicionado,itemListaServico,codigoCnae,discriminacao} 
-     * 
+     *
+     * @param array itens {valor, valorDeducoes, valorPis, valorCofins, valorIr, valorCsll, issRetido,valorIss,valorIssRetido,outrasRetencoes, baseCalculo,aliquota,valorLiquidoNfse,descontoIncondicionado,descontoCondicionado,itemListaServico,codigoCnae,discriminacao}
+     *
      */
     private $Item =
             array(
@@ -99,21 +99,21 @@ class NFSePHPGinfesData {
     );
 
     /*     *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *
-     * OBS: 
-     * No item, os campos 'itemListaServico'  e 'codigoTributacaoMunicipio' precisam ter o EXATO formato conforme cadastro na prefeitura do municipio         
-     * 
-     * Para verificar qual o código de tributação referente ao serviço informado no arquivo acesse o Ginfes: http://PREFEITURADASUACIDADE.ginfes.com.br 
-     * com o usuário e senha da empresa. 
+     * OBS:
+     * No item, os campos 'itemListaServico'  e 'codigoTributacaoMunicipio' precisam ter o EXATO formato conforme cadastro na prefeitura do municipio
      *
-     * Clique em emitir NFS-e / clique em serviços prestados / clique na lupa ao lado de Código do Serviço/Atividade: informe o código ou a 
-     * descrição do serviço na barra de pesquisa e clique em pesquisar / será exibido uma lista com todos os serviços referente ao código / 
+     * Para verificar qual o código de tributação referente ao serviço informado no arquivo acesse o Ginfes: http://PREFEITURADASUACIDADE.ginfes.com.br
+     * com o usuário e senha da empresa.
+     *
+     * Clique em emitir NFS-e / clique em serviços prestados / clique na lupa ao lado de Código do Serviço/Atividade: informe o código ou a
+     * descrição do serviço na barra de pesquisa e clique em pesquisar / será exibido uma lista com todos os serviços referente ao código /
      * descrição pesquisado, o código de tributação é a coluna código de atividade copie exatamente como demonstrado no sistema.
-     * 
+     *
      * *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  * */
     /**
      *
      * DADOS DO TOMADOR
-     * 
+     *
      */
     private $tomaCPF = '';
     private $tomaCNPJ = '';
@@ -127,76 +127,81 @@ class NFSePHPGinfesData {
     private $tomaEndUF = '';
     private $tomaEndCep = '';
     private $tomaEmail = '';
-    
+
     /* -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+- FIM esta parte toda vai para a aplicação +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+- */
 
     /**
-     * 
+     *
      * @param type $rps
      */
-    public function __construct($rps) {
+    public function __construct($rps)
+    {
         $this->numrps = date("ym") . sprintf('%011s', $rps);
     }
 
     /**
-     * 
+     *
      * @param type $campo
      * @param type $valor
      */
-    public function set($campo, $valor) {
+    public function set($campo, $valor)
+    {
         $this->{$campo} = $valor;
     }
 
     /**
-     * 
-     * @param type $campo
+     *
+     * @param  type $campo
      * @return type
      */
-    public function get($campo) {
+    public function get($campo)
+    {
         return $this->{$campo};
     }
 
     /**
-     * 
+     *
      * @param type $campo
      * @param type $valor
      */
-    public function setItem($campo, $valor) {
+    public function setItem($campo, $valor)
+    {
         $this->Item[$campo] = $valor;
         $this->Item['baseCalculo']      = $this->Item['valorServicos'] - $this->Item['descontoIncondicionado'] - $this->Item['valorDeducoes'] ;
         $this->Item['valorLiquidoNfse'] = $this->Item['valorServicos'] - $this->Item['valorPis'] - $this->Item['valorCofins'] - $this->Item['valorInss'] - $this->Item['valorCsll'] - $this->Item['outrasRetencoes'] - $this->Item['valorIss'] - $this->Item['descontoIncondicionado'] - $this->Item['descontoCondicionado'];
     }
-    
+
     /**
-     * 
+     *
      * @return type
      */
-    public function getArrayItem(){
+    public function getArrayItem()
+    {
         return $this->Item;
     }
 
     /**
-     * 
-     * @param type $campo
+     *
+     * @param  type $campo
      * @return type
      */
-    public function getItem($campo) {
+    public function getItem($campo)
+    {
         return $this->Item[$campo];
     }
 
     /**
-     * 
+     *
      * @param type $razao
      * @param type $fantasia
      * @param type $cnpj
      * @param type $im
      */
-    public function setEmitente($razao, $fantasia, $cnpj, $im) {
+    public function setEmitente($razao, $fantasia, $cnpj, $im)
+    {
         $this->razaoSocial = $razao;
         $this->nomeFantasia = $fantasia;
         $this->CNPJ = $cnpj;
         $this->IM = $im;
     }
 }
-
-?>

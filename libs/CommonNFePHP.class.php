@@ -31,17 +31,17 @@
  * @author      Marcos Diez <marcos at unitron dot com dot br>
  *
  *        CONTRIBUIDORES (por ordem alfabetica):
- *          Roberto L. Machado <linux dot rlm at gmail dot com> 
+ *          Roberto L. Machado <linux dot rlm at gmail dot com>
  *
  * Esta classe depende de PdfNFePHP.class.php e deve ser utilizada pelas classes DanfeNFePHP e DacteNFePHP
  */
 
 class CommonNFePHP
 {
-    
+
     /**
      * __adicionaLogoPeloCnpj
-     * @author Marcos Diez 
+     * @author Marcos Diez
      * @param none
      * @return none
      */
@@ -60,36 +60,39 @@ class CommonNFePHP
         $imgPath = "logos/" . $this->emit->getElementsByTagName("CNPJ")->item(0)->nodeValue . ".jpg";
         if (file_exists($imgPath)) {
             $this->logomarca = $imgPath;
+
             return;
         }
         //procurar diretorio acima do anterior
         $imgPath = "../" . $imgPath;
         if (file_exists($imgPath)) {
             $this->logomarca = $imgPath;
+
             return;
         }
         //procurar diretorio acima do anterior
         $imgPath = "../" . $imgPath;
         if (file_exists($imgPath)) {
             $this->logomarca = $imgPath;
+
             return;
         }
         //procurar diretorio acima do anterior
         $imgPath = "../" . $imgPath;
         if (file_exists($imgPath)) {
             $this->logomarca = $imgPath;
+
             return;
         }
     } //fim __adicionaLogoPeloCnpj
 
-    
     /**
      * __simpleGetValue
      * Extrai o valor do node DOM
      * @author Marcos Diez
-     * @param DOM $theObj
-     * @param string $keyName identificador da TAG do xml
-     * @param string $extraTextBefore prefixo do retorno
+     * @param  DOM    $theObj
+     * @param  string $keyName         identificador da TAG do xml
+     * @param  string $extraTextBefore prefixo do retorno
      * @param string extraTextAfter sulfixo do retorno
      * @param number itemNum numero do item a ser retornado
      * @return string
@@ -103,6 +106,7 @@ class CommonNFePHP
         if (isset($vct)) {
             return $extraTextBefore . trim($vct->nodeValue) . $extraTextAfter;
         }
+
         return '';
     } //fim __simpleGetValue
 
@@ -110,9 +114,9 @@ class CommonNFePHP
      * __simpleGetDate
      * Recupera e reformata a data do padrão da NFe para dd/mm/aaaa
      * @author Marcos Diez
-     * @param DOM $theObj
-     * @param string $keyName identificador da TAG do xml
-     * @param string $extraText prefixo do retorno
+     * @param  DOM    $theObj
+     * @param  string $keyName   identificador da TAG do xml
+     * @param  string $extraText prefixo do retorno
      * @return string
      */
     protected function __simpleGetDate($theObj, $keyName, $extraText = '')
@@ -123,15 +127,17 @@ class CommonNFePHP
         $vct = $theObj->getElementsByTagName($keyName)->item(0);
         if (isset( $vct )) {
             $theDate = explode("-", $vct->nodeValue);
+
             return $extraText . $theDate[2] . "/" . $theDate[1] . "/" . $theDate[0];
         }
+
         return '';
     } //fim __simpleGetDate
 
     /**
      * __modulo11
      * @author Marcos Diez
-     * @param string $numero
+     * @param  string  $numero
      * @return integer modulo11 do numero passado
      */
     protected function __modulo11($numero = '')
@@ -153,6 +159,7 @@ class CommonNFePHP
             }
         }
         $resto = ($soma * 10) % 11;
+
         return ($resto == 10 || $resto == 0) ? 1 : $resto;
     } //fim __modulo11
 
@@ -160,7 +167,7 @@ class CommonNFePHP
      *__ymd2dmy
      * Converte datas no formato YMD (ex. 2009-11-02) para o formato brasileiro 02/11/2009)
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param string $data Parâmetro extraido da NFe
+     * @param  string $data Parâmetro extraido da NFe
      * @return string Formatada para apresentação da data no padrão brasileiro
      */
     protected function __ymd2dmy($data = '')
@@ -171,6 +178,7 @@ class CommonNFePHP
                 $needle = "-";
             }
             $dt = explode($needle, $data);
+
             return "$dt[2]/$dt[1]/$dt[0]";
         }
     } // fim da função __ymd2dmy
@@ -179,7 +187,7 @@ class CommonNFePHP
      * __convertTime
      * Converte a imformação de data e tempo contida na NFe
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param string $DH Informação de data e tempo extraida da NFe
+     * @param  string    $DH Informação de data e tempo extraida da NFe
      * @return timestamp UNIX Para uso com a funçao date do php
      */
     protected function __convertTime($DH)
@@ -190,6 +198,7 @@ class CommonNFePHP
             $inter = explode('-', $aDH[1]);
             $atDH = explode(':', $inter[0]);
             $timestampDH = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
+
             return $timestampDH;
         }
     } //fim da função __convertTime
@@ -198,8 +207,8 @@ class CommonNFePHP
      * __format
      * Função de formatação de strings.
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param string $campo String a ser formatada
-     * @param string $mascara Regra de formatção da string (ex. ##.###.###/####-##)
+     * @param  string $campo   String a ser formatada
+     * @param  string $mascara Regra de formatção da string (ex. ##.###.###/####-##)
      * @return string Retorna o campo formatado
      */
     protected function __format($campo = '', $mascara = '')
@@ -274,6 +283,7 @@ class CommonNFePHP
                     $sRetorno = '(' . trim($sRetorno);
                 }
             }
+
             return trim($sRetorno);
         } else {
             return '';
@@ -284,9 +294,9 @@ class CommonNFePHP
      * __getNumLines
      * Obtem o numero de linhas usadas pelo texto usando a fonte especifidada
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param string $text
-     * @param number $width
-     * @param array $aFont
+     * @param  string $text
+     * @param  number $width
+     * @param  array  $aFont
      * @return number numero de linhas
      */
     protected function __getNumLines($text, $width, $aFont = array('font'=>'Times','size'=>8,'style'=>''))
@@ -294,9 +304,9 @@ class CommonNFePHP
         $text = trim($text);
         $this->pdf->SetFont($aFont['font'], $aFont['style'], $aFont['size']);
         $n = $this->pdf->WordWrap($text, $width-0.2);
+
         return $n;
     } // fim __getNumLines
-
 
     /**
      *__textBox
@@ -306,20 +316,20 @@ class CommonNFePHP
      * Ex. $this->__textBox(2,20,34,8,'Texto',array('fonte'=>$this->fontePadrao,'size'=>10,'style='B'),'C','L',FALSE,'http://www.nfephp.org')
      *
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param number $x Posição horizontal da caixa, canto esquerdo superior
-     * @param number $y Posição vertical da caixa, canto esquerdo superior
-     * @param number $w Largura da caixa
-     * @param number $h Altura da caixa
-     * @param string $text Conteúdo da caixa
-     * @param array $aFont Matriz com as informações para formatação do texto com fonte, tamanho e estilo
-     * @param string $vAlign Alinhamento vertical do texto, T-topo C-centro B-base
-     * @param string $hAlign Alinhamento horizontal do texto, L-esquerda, C-centro, R-direita
-     * @param boolean $border TRUE ou 1 desenha a borda, FALSE ou 0 Sem borda
-     * @param string $link Insere um hiperlink
-     * @param boolean $force Se for true força a caixa com uma unica linha e para isso atera o tamanho do fonte até caber no espaço, se falso mantem o tamanho do fonte e usa quantas linhas forem necessárias
-     * @param number $hmax
-     * @param number $vOffSet incremento forçado na na posição Y
-     * @return number $height Qual a altura necessária para desenhar esta textBox
+     * @param  number  $x       Posição horizontal da caixa, canto esquerdo superior
+     * @param  number  $y       Posição vertical da caixa, canto esquerdo superior
+     * @param  number  $w       Largura da caixa
+     * @param  number  $h       Altura da caixa
+     * @param  string  $text    Conteúdo da caixa
+     * @param  array   $aFont   Matriz com as informações para formatação do texto com fonte, tamanho e estilo
+     * @param  string  $vAlign  Alinhamento vertical do texto, T-topo C-centro B-base
+     * @param  string  $hAlign  Alinhamento horizontal do texto, L-esquerda, C-centro, R-direita
+     * @param  boolean $border  TRUE ou 1 desenha a borda, FALSE ou 0 Sem borda
+     * @param  string  $link    Insere um hiperlink
+     * @param  boolean $force   Se for true força a caixa com uma unica linha e para isso atera o tamanho do fonte até caber no espaço, se falso mantem o tamanho do fonte e usa quantas linhas forem necessárias
+     * @param  number  $hmax
+     * @param  number  $vOffSet incremento forçado na na posição Y
+     * @return number  $height Qual a altura necessária para desenhar esta textBox
      */
     protected function __textBox(
         $x,
@@ -426,6 +436,7 @@ class CommonNFePHP
                 break;
             }
         }
+
         return ($y1-$y)-$incY;
     } // fim função __textBox
 
@@ -440,20 +451,20 @@ class CommonNFePHP
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @author Guilherme Calabria Filho <guiga86 at gmail dot com>
-     * @param number $x Posição horizontal da caixa, canto esquerdo superior
-     * @param number $y Posição vertical da caixa, canto esquerdo superior
-     * @param number $w Largura da caixa
-     * @param number $h Altura da caixa
-     * @param string $text Conteúdo da caixa
-     * @param array $aFont Matriz com as informações para formatação do texto com fonte, tamanho e estilo
-     * @param string $vAlign Alinhamento vertical do texto, T-topo C-centro B-base
-     * @param string $hAlign Alinhamento horizontal do texto, L-esquerda, C-centro, R-direita
-     * @param boolean $border TRUE ou 1 desenha a borda, FALSE ou 0 Sem borda
-     * @param string $link Insere um hiperlink
-     * @param boolean $force Se for true força a caixa com uma unica linha e para isso atera o tamanho do fonte até caber no espaço, se falso mantem o tamanho do fonte e usa quantas linhas forem necessárias
-     * @param number $hmax
-     * @param number $vOffSet incremento forçado na na posição Y
-     * @return number $height Qual a altura necessária para desenhar esta textBox
+     * @param  number  $x       Posição horizontal da caixa, canto esquerdo superior
+     * @param  number  $y       Posição vertical da caixa, canto esquerdo superior
+     * @param  number  $w       Largura da caixa
+     * @param  number  $h       Altura da caixa
+     * @param  string  $text    Conteúdo da caixa
+     * @param  array   $aFont   Matriz com as informações para formatação do texto com fonte, tamanho e estilo
+     * @param  string  $vAlign  Alinhamento vertical do texto, T-topo C-centro B-base
+     * @param  string  $hAlign  Alinhamento horizontal do texto, L-esquerda, C-centro, R-direita
+     * @param  boolean $border  TRUE ou 1 desenha a borda, FALSE ou 0 Sem borda
+     * @param  string  $link    Insere um hiperlink
+     * @param  boolean $force   Se for true força a caixa com uma unica linha e para isso atera o tamanho do fonte até caber no espaço, se falso mantem o tamanho do fonte e usa quantas linhas forem necessárias
+     * @param  number  $hmax
+     * @param  number  $vOffSet incremento forçado na na posição Y
+     * @return number  $height Qual a altura necessária para desenhar esta textBox
      */
     protected function __textBox90(
         $x,
@@ -564,6 +575,7 @@ class CommonNFePHP
         }
         //Zerando rotação
         $this->pdf->Rotate(0, $x, $y);
+
         return ($y1-$y)-$incY;
     } // fim função __textBox90
 }

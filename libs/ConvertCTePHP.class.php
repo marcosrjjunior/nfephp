@@ -20,7 +20,7 @@
  * <http://www.fsfla.org/svnwiki/trad/GPLv3>
  * ou
  * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
- * 
+ *
  * @package     NFePHP
  * @name        ConvertCTePHP
  * @version     1.0.1
@@ -35,7 +35,7 @@
  *              Daniel Batista Lemes <dlemes at gmail dot com>
  *              Joao Eduardo Silva Correa <jcorrea at sucden dot com dot br>
  *              Roberto Spadim <rspadim at gmail dot com>
- * 
+ *
  *<Nota de Lucimar>
  *    	Fiz esse conversor de CTe > TXT baseado no conversor NFe > TXT do projeto.
  *	Alguns campos e grupos eu não implementei, pois não foi necessário o uso no meu cliente.
@@ -50,21 +50,21 @@
  *	399 - infCteAnu*
  */
 
-require_once ('CommonNFePHP.class.php');
+require_once 'CommonNFePHP.class.php';
 
-class ConvertCTePHP extends CommonNFePHP {
-
+class ConvertCTePHP extends CommonNFePHP
+{
     /**
      * xml
      * XML do CTe
-     * @var string 
+     * @var string
      */
     public $xml = '';
 
     /**
      * chave
      * ID do CTe 44 digitos
-     * @var string 
+     * @var string
      */
     public $chave = '';
 
@@ -109,10 +109,11 @@ class ConvertCTePHP extends CommonNFePHP {
      * @package NFePHP
      * @name __contruct
      * @version 3.0.0
-     * @param boolean $limpar_string Ativa flag para limpar os caracteres especiais e acentos
+     * @param  boolean $limpar_string Ativa flag para limpar os caracteres especiais e acentos
      * @return none
      */
-    function __construct($limpar_string = true) {
+    public function __construct($limpar_string = true)
+    {
         $this->limpar_string = $limpar_string;
     }
 
@@ -122,10 +123,11 @@ class ConvertCTePHP extends CommonNFePHP {
      * especificações do Manual de Importação/Exportação TXT
      * Conhecimento de Transporte Eletrônico versão 1.0.4 (25/05/2012)
      *
-     * @param mixed $txt Path para o arquivo txt, array ou o conteudo do txt em uma string
+     * @param  mixed  $txt Path para o arquivo txt, array ou o conteudo do txt em uma string
      * @return string xml construido
      */
-    public function ctetxt2xml($txt) {
+    public function ctetxt2xml($txt)
+    {
         if (is_file($txt)) {
             $aDados = file($txt, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES | FILE_TEXT);
         } else {
@@ -137,6 +139,7 @@ class ConvertCTePHP extends CommonNFePHP {
                 }
             }
         }
+
         return $this->__ctetxt2xml_array_com_linhas($aDados);
     } //fim ctetxt2xml
 
@@ -149,10 +152,11 @@ class ConvertCTePHP extends CommonNFePHP {
      * @package NFePHP
      * @name ctetxt2xml
      * @version 1.0.0
-     * @param string $arrayComAsLinhasDoArquivo Array de Strings onde cada elemento é uma linha do arquivo
+     * @param  string $arrayComAsLinhasDoArquivo Array de Strings onde cada elemento é uma linha do arquivo
      * @return string xml construido
      */
-    protected function __ctetxt2xml_array_com_linhas($arrayComAsLinhasDoArquivo) {
+    protected function __ctetxt2xml_array_com_linhas($arrayComAsLinhasDoArquivo)
+    {
         $arquivo = $arrayComAsLinhasDoArquivo;
         $ctes = array();
         $cur_cte = -1;
@@ -165,8 +169,7 @@ class ConvertCTePHP extends CommonNFePHP {
             //remove todos os espaços adicionais, tabs, linefeed, e CR
             //de todos os campos de dados retirados do TXT
             for ($x = 0; $x < count($dados); $x++) {
-                if (!empty($dados[$x]))
-                {
+                if (!empty($dados[$x])) {
                     $dados[$x] = trim(preg_replace('/\s\s+/', " ", $dados[$x]));
                     if ($this->limpar_string)
                         $dados[$x] = $this->__limpaString($dados[$x]);
@@ -221,7 +224,7 @@ class ConvertCTePHP extends CommonNFePHP {
                     $ide->appendChild($forPag);
                     $mod = $dom->createElement("mod", $dados[6]);
                     $ide->appendChild($mod);
-                    $serie = $dom->createElement("serie", (int)$dados[7]);
+                    $serie = $dom->createElement("serie", (int) $dados[7]);
                     $ide->appendChild($serie);
                     $nCT = $dom->createElement("nCT", $dados[8]);
                     $ide->appendChild($nCT);
@@ -244,7 +247,7 @@ class ConvertCTePHP extends CommonNFePHP {
                     $ide->appendChild($procEmi);
                     $verProc = $dom->createElement("verProc", $dados[16]);
                     $ide->appendChild($verProc);
-                    if (empty($dados[17])){
+                    if (empty($dados[17])) {
                         $dados[17] = "NfePHP";
                     }
                     $cMunEnv = $dom->createElement("cMunEnv", $dados[18]);
@@ -271,7 +274,7 @@ class ConvertCTePHP extends CommonNFePHP {
                     $ide->appendChild($UFFim);
                     $retira = $dom->createElement("retira", $dados[29]);
                     $ide->appendChild($retira);
-                    if (!empty($dados[30])){
+                    if (!empty($dados[30])) {
                         $xDetRetira = $dom->createElement("xDetRetira", $dados[30]);
                         $ide->appendChild($xDetRetira);
                     }
@@ -287,7 +290,7 @@ class ConvertCTePHP extends CommonNFePHP {
                     $toma4 = $dom->createElement("toma4");
                     $toma = $dom->createElement("toma", $dados[1]);
                     $toma4->appendChild($toma);
-                    if (!empty($dados[2])){
+                    if (!empty($dados[2])) {
                         $CNPJ = $dom->createElement("CNPJ", $dados[2]);
                         $toma4->appendChild($CNPJ);
                     } else {
@@ -452,7 +455,7 @@ class ConvertCTePHP extends CommonNFePHP {
                     $enderEmit = $dom->createElement("enderEmit");
                     $xLgr = $dom->createElement("xLgr", $dados[5]);
                     $enderEmit->appendChild($xLgr);
-                    $dados[6] = abs((int)$dados[6]);
+                    $dados[6] = abs((int) $dados[6]);
                     $nro = $dom->createElement("nro", $dados[6]);
                     $enderEmit->appendChild($nro);
                     if (!empty($dados[7])) {
@@ -1275,60 +1278,61 @@ class ConvertCTePHP extends CommonNFePHP {
                 unset($xml);
             }
         }
+
         return ($arquivos_xml);
     } //end function
-
 
     /**
      * __limpaString
      * Remove todos dos caracteres especiais do texto e os acentos
      * preservando apenas letras de A-Z numeros de 0-9 e os caracteres @ , - ; : / _
-     * @param   string $texto string a ser limpa 
-     * @return  string Texto sem caractere especiais
+     * @param  string $texto string a ser limpa
+     * @return string Texto sem caractere especiais
      */
-    private function __limpaString($texto){
+    private function __limpaString($texto)
+    {
         $aFind = array('&', 'á', 'à', 'ã', 'â', 'é', 'ê', 'í', 'ó', 'ô', 'õ', 'ú', 'ü', 'ç', 'Á', 'À', 'Ã', 'Â', 'É', 'Ê', 'Í', 'Ó', 'Ô', 'Õ', 'Ú', 'Ü', 'Ç');
         $aSubs = array('e', 'a', 'a', 'a', 'a', 'e', 'e', 'i', 'o', 'o', 'o', 'u', 'u', 'c', 'A', 'A', 'A', 'A', 'E', 'E', 'I', 'O', 'O', 'O', 'U', 'U', 'C');
         $novoTexto = str_replace($aFind, $aSubs, $texto);
         $novoTexto = preg_replace("/[^a-zA-Z0-9 @,-.;:\/_]/", "", $novoTexto);
+
         return $novoTexto;
     } //fim __limpaString
 
     /**
      *__calculaDV
      * Função para o calculo o digito verificador da chave da CTe
-     * @param string $chave43
-     * @return string 
+     * @param  string $chave43
+     * @return string
      */
-    private function __calculaDV($chave43){
+    private function __calculaDV($chave43)
+    {
         $multiplicadores = array(2, 3, 4, 5, 6, 7, 8, 9);
         $i = 42;
         $soma_ponderada = 0;
-        while ($i >= 0)
-        {
-            for ($m = 0; $m < count($multiplicadores) && $i >= 0; $m++)
-            {
+        while ($i >= 0) {
+            for ($m = 0; $m < count($multiplicadores) && $i >= 0; $m++) {
                 $soma_ponderada += $chave43[$i] * $multiplicadores[$m];
                 $i--;
             }
         }
         $resto = $soma_ponderada % 11;
-        if ($resto == '0' || $resto == '1')
-        {
+        if ($resto == '0' || $resto == '1') {
             $cDV = 0;
-        } else
-        {
+        } else {
             $cDV = 11 - $resto;
         }
+
         return $cDV;
     } //fim __calculaDV
 
     /**
      * __montaChaveXML
-     * 
-     * @param object $dom 
+     *
+     * @param object $dom
      */
-    private function __montaChaveXML($dom) {
+    private function __montaChaveXML($dom)
+    {
         $ide = $dom->getElementsByTagName("ide")->item(0);
         $emit = $dom->getElementsByTagName("emit")->item(0);
         $cUF = $ide->getElementsByTagName('cUF')->item(0)->nodeValue;
@@ -1352,4 +1356,3 @@ class ConvertCTePHP extends CommonNFePHP {
     } //fim __calculaChave
 
 } //fim da classe
-?>

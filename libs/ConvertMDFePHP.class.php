@@ -21,7 +21,7 @@
  * <http://www.fsfla.org/svnwiki/trad/GPLv3>
  * ou
  * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
- * 
+ *
  * Esta classe atende aos critérios estabelecidos no
  * Manual de Importação/Exportação TXT Notas Fiscais eletrônicas versão 2.0.0
  *
@@ -46,14 +46,14 @@ class ConvertMDFePHP
     /**
      * xml
      * XML da MDFe
-     * @var string 
+     * @var string
      */
     public $xml = '';
 
     /**
      * chave
      * ID da MDFe 44 digitos
-     * @var string 
+     * @var string
      */
     public $chave = '';
 
@@ -83,7 +83,7 @@ class ConvertMDFePHP
      * @var string
      */
     public $tpAmb = '';
-    
+
     /**
      * $tpEmis
      * Tipo de emissão
@@ -96,12 +96,12 @@ class ConvertMDFePHP
      * Método contrutor da classe
      *
      * @name contruct
-     * @param boolean $limparString Ativa flag para limpar os caracteres especiais e acentos
+     * @param  boolean $limparString Ativa flag para limpar os caracteres especiais e acentos
      * @return none
      */
     public function __construct()
     {
- 
+
     } //fim __contruct
 
     /**
@@ -109,7 +109,7 @@ class ConvertMDFePHP
      * Converte o arquivo txt em um array para ser mais facilmente tratado
      *
      * @name MDFetxt2xml
-     * @param mixed $txt Path para o arquivo txt, array ou o conteudo do txt em uma string
+     * @param  mixed  $txt Path para o arquivo txt, array ou o conteudo do txt em uma string
      * @return string xml construido
      */
     public function MDFetxt2xml($txt, $tpAmb, $tipEmiss)
@@ -125,6 +125,7 @@ class ConvertMDFePHP
                 }
             }
         }
+
         return $this->MDFeTxt2XmlArrayComLinhas($aDados, $tpAmb, $tipEmiss);
     } //fim MDFetxt2xml
 
@@ -135,7 +136,7 @@ class ConvertMDFePHP
      * Notas Fiscais eletrônicas versão 2.0.0 (24/08/2010)
      *
      * @name MDFeTxt2XmlArrayComLinhas
-     * @param string $arrayComAsLinhasDoArquivo Array de Strings onde cada elemento é uma linha do arquivo
+     * @param  string $arrayComAsLinhasDoArquivo Array de Strings onde cada elemento é uma linha do arquivo
      * @return string xml construido
      */
     protected function MDFeTxt2XmlArrayComLinhas($arrayComAsLinhasDoArquivo, $tpAmb, $tipEmiss)
@@ -143,7 +144,6 @@ class ConvertMDFePHP
         $arquivo = $arrayComAsLinhasDoArquivo;
         $notas = array();
         $currnota = -1;
-        
 
         //lê linha por linha do arquivo txt
         for ($l = 0; $l < count($arquivo); $l++) {
@@ -172,7 +172,7 @@ class ConvertMDFePHP
                     $currnota++;
                     unset($dom, $MDFe, $infMDFe);
                     /// limpar todas variaveis utilizadas por cada MDFe....
-                    
+
                     unset($dom, $MDFe, $infMDFe, $ide, $nMDF, $cMDF, $cDV, $dhEmi, $tpEmis, $verProc, $UFIni, $UFFim, $UFPer, $cMunDescarga, $xMunDescarga, $chMDFe, $SegCodBarra, $tpUnidTransp, $idUnidTransp, $placa, $tara, $tpRod, $tpCar, $UF, $nome, $cpf, $placa, $tara, $capKG, $tpCar, $UF, $tpRod, $qMDFe, $vCarga, $cUnid, $qCarga);
 
                     $this->chave = '';
@@ -236,7 +236,7 @@ class ConvertMDFePHP
                     $ide->appendChild($UFIni);
                     $UFFim = $dom->createElement("UFFim", $dados[15]);
                     $ide->appendChild($UFFim);
-                    
+
                     $infMDFe->appendChild($ide);
                     break;
                 case "infMunCarrega":
@@ -298,23 +298,23 @@ class ConvertMDFePHP
                     }
                     $UF = $dom->createElement("UF", $dados[8]);
                     $enderEmi->appendChild($UF);
-                    
+
                     //$emit->insertBefore($emit->appendChild($enderEmi), $xNome);
-                    
+
                     $emit->appendChild($enderEmi);
                     break;
                 case "infModal":
                     // infMDFe => infModal|versaoModal
                     $infModal = $dom->createElement("infModal");
                     $infModal->setAttribute("versaoModal", $dados[1]);
-                    
+
                     $infMDFe->appendChild($infModal);
                     break;
                 case "veicTracao":
                     // infMDFe => infModal => rodo => veicTracao|placa|tara|tpRod|tpCar|UF
                     $rodo = $dom->createElement("rodo");
                     $infModal->appendChild($rodo);
-                    
+
                     $veicTracao = $dom->createElement("veicTracao");
                     $placa = $dom->createElement("placa", $dados[1]);
                     $veicTracao->appendChild($placa);
@@ -350,7 +350,7 @@ class ConvertMDFePHP
                     $condutor->appendChild($xNome);
                     $CPF = $dom->createElement("CPF", $dados[2]);
                     $condutor->appendChild($CPF);
-                    
+
                     $veicTracao->insertBefore($veicTracao->appendChild($condutor), $tpRod);
                     break;
                 case "veicReboque":
@@ -369,7 +369,7 @@ class ConvertMDFePHP
 
                     $rodo->appendChild($veicReboque);
                     break;
-                case "infMunDescarga": 
+                case "infMunDescarga":
                     // infMDFe => infDoc => infMunDescarga|cMunDescarga|xMunDescarga
                     if (!isset($infDoc)) {
                         $infDoc = $dom->createElement("infDoc");
@@ -378,22 +378,22 @@ class ConvertMDFePHP
                     }
                     $infMunDescarga = $dom->createElement("infMunDescarga");
                     $infDoc->appendChild($infMunDescarga);
-                    
+
                     $cMunDescarga = $dom->createElement("cMunDescarga", $dados[1]);
                     $infMunDescarga->appendChild($cMunDescarga);
                     $xMunDescarga = $dom->createElement("xMunDescarga", $dados[2]);
                     $infMunDescarga->appendChild($xMunDescarga);
-                    
+
                     break;
                 case "infNFe":
                     // infMDFe => infDoc => infMunDescarga => infNFe|chNFe|SegCodBarra
-                                        
+
                     $infNFe = $dom->createElement("infNFe");
                     $infMunDescarga->appendChild($infNFe);
-                    
+
                     $chNFe = $dom->createElement("chNFe", $dados[1]);
                     $infNFe->appendChild($chNFe);
-                    
+
                     if (!empty($dados[2])) {
                         $SegCodBarra = $dom->createElement("SegCodBarra", $dados[2]);
                         $infNFe->appendChild($SegCodBarra);
@@ -402,7 +402,7 @@ class ConvertMDFePHP
                 case "tot":
                     // infMDFe => tot|qNFe|vCarga|cUnid|qCarga
                     $tot = $dom->createElement("tot");
-                    
+
                     $qNFe = $dom->createElement("qNFe", $dados[1]);
                     $tot->appendChild($qNFe);
                     $vCarga = $dom->createElement("vCarga", $dados[2]);
@@ -440,6 +440,7 @@ class ConvertMDFePHP
                 unset($xml);
             }
         }
+
         return($arquivos_xml);
     }
     //end function
@@ -448,10 +449,10 @@ class ConvertMDFePHP
      * limpaString
      * Remove todos dos caracteres especiais do texto e os acentos
      * preservando apenas letras de A-Z numeros de 0-9 e os caracteres @ , - ; : / _
-     * 
+     *
      * @name limpaString
-     * @param string $texto String a ser limpa
-     * @return  string Texto sem caractere especiais
+     * @param  string $texto String a ser limpa
+     * @return string Texto sem caractere especiais
      */
     private function limpaString($texto)
     {
@@ -463,16 +464,17 @@ class ConvertMDFePHP
             'E', 'E', 'I', 'O', 'O', 'O', 'U', 'U', 'C');
         $novoTexto = str_replace($aFind, $aSubs, $texto);
         $novoTexto = preg_replace("/[^a-zA-Z0-9 @,-.;:\/_]/", "", $novoTexto);
+
         return $novoTexto;
     } //fim limpaString
 
     /**
      * calculaDV
      * Função para o calculo o digito verificador da chave da MDFe
-     * 
+     *
      * @name calculaDV
-     * @param string $chave43
-     * @return string 
+     * @param  string $chave43
+     * @return string
      */
     private function calculaDV($chave43)
     {
@@ -491,6 +493,7 @@ class ConvertMDFePHP
         } else {
             $cDV = 11 - $resto;
         }
+
         return $cDV;
     } //fim calculaDV
 
@@ -498,9 +501,9 @@ class ConvertMDFePHP
      * montaChaveXML
      * Monta a chave da MDFe de 44 digitos com base em seus dados
      * Isso é útil no caso da chave formada no txt estar errada
-     * 
+     *
      * @name montaChaveXML
-     * @param object $dom 
+     * @param object $dom
      */
     private function montaChaveXML($dom)
     {
